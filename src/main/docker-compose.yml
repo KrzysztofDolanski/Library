@@ -12,4 +12,6 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=library_db
+    volumes:
+      - ./db_fill.sql
