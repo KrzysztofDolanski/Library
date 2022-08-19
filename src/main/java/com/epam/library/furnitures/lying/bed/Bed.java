@@ -1,4 +1,4 @@
-package com.epam.library.furnitures.lying;
+package com.epam.library.furnitures.lying.bed;
 
 import com.epam.library.furnitures.Materials;
 import com.epam.library.furnitures.MaxSize;
@@ -7,25 +7,18 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "BEDS")
-public class Bed {
+class Bed {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    private Long id;
     @Column(name = "material_type")
-    Materials materialType;
-    int price;
-    MaxSize size;
-    String colour;
+    private Materials materialType;
+    private int price;
+    private MaxSize size;
+    private String colour;
 
     public Bed() {
-    }
-
-    public Bed(Materials materialType, int price, MaxSize size, String colour) {
-        this.materialType = materialType;
-        this.price = price;
-        this.size = size;
-        this.colour = colour;
     }
 
 
@@ -67,5 +60,16 @@ public class Bed {
 
     public void setColour(String colour) {
         this.colour = colour;
+    }
+
+    @Override
+    public String toString() {
+        return "Bed{" +
+                "id=" + id +
+                ", materialType=" + materialType +
+                ", price=" + price +
+                ", size=" + size +
+                ", colour='" + colour + '\'' +
+                '}';
     }
 }

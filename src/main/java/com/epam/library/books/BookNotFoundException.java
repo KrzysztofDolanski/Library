@@ -1,11 +1,12 @@
 package com.epam.library.books;
 
-public class NoBookFindException extends Exception{
+import java.lang.module.FindException;
+
+public class BookNotFoundException extends FindException {
 
     @Override
-    public String getMessage(String id) {
-        return "Book with id " + id +" not found";
+    public String getMessage() {
+        return "Book not found";
     }
-
 
 }

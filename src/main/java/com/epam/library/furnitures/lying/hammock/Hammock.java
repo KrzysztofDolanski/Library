@@ -1,4 +1,4 @@
-package com.epam.library.furnitures.lying;
+package com.epam.library.furnitures.lying.hammock;
 
 import com.epam.library.furnitures.Materials;
 import com.epam.library.furnitures.MaxSize;
@@ -7,26 +7,19 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "HAMMOCKS")
-public class Hammock {
+class Hammock {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    private Long id;
     @Column(name = "material_type")
-    Materials materialType;
-    int price;
-    MaxSize size;
-    String colour;
+    private Materials materialType;
+    private int price;
+    private MaxSize size;
+    private String colour;
 
     public Hammock() {
-    }
-
-    public Hammock(Materials materialType, int price, MaxSize size, String colour) {
-        this.materialType = materialType;
-        this.price = price;
-        this.size = size;
-        this.colour = colour;
     }
 
 
@@ -68,5 +61,16 @@ public class Hammock {
 
     public void setColour(String colour) {
         this.colour = colour;
+    }
+
+    @Override
+    public String toString() {
+        return "Hammock{" +
+                "id=" + id +
+                ", materialType=" + materialType +
+                ", price=" + price +
+                ", size=" + size +
+                ", colour='" + colour + '\'' +
+                '}';
     }
 }

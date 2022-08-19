@@ -1,4 +1,4 @@
-package com.epam.library.furnitures.lying;
+package com.epam.library.furnitures.lying.sofa;
 
 import com.epam.library.furnitures.Materials;
 import com.epam.library.furnitures.MaxSize;
@@ -67,5 +67,16 @@ public class Sofa {
 
     public void setColour(String colour) {
         this.colour = colour;
+    }
+
+    @Override
+    public String toString() {
+        return "Sofa{" +
+                "id=" + id +
+                ", materialType=" + materialType +
+                ", price=" + price +
+                ", size=" + size +
+                ", colour='" + colour + '\'' +
+                '}';
     }
 }

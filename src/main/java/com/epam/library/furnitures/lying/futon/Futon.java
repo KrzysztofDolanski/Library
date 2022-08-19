@@ -1,4 +1,4 @@
-package com.epam.library.furnitures.lying;
+package com.epam.library.furnitures.lying.futon;
 
 import com.epam.library.furnitures.Materials;
 import com.epam.library.furnitures.MaxSize;
@@ -7,25 +7,18 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "FUTONS")
-public class Futon {
+class Futon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    private Long id;
     @Column(name = "material_type")
-    Materials materialType;
-    int price;
-    MaxSize size;
-    String colour;
+    private Materials materialType;
+    private int price;
+    private MaxSize size;
+    private String colour;
 
     public Futon() {
-    }
-
-    public Futon(Materials materialType, int price, MaxSize size, String colour) {
-        this.materialType = materialType;
-        this.price = price;
-        this.size = size;
-        this.colour = colour;
     }
 
 

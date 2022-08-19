@@ -1,2 +1,4 @@
-package com.epam.library.furnitures.sets;public class PatioSet {
+package com.epam.library.furnitures.sets;
+
+public class PatioSet {
 }
