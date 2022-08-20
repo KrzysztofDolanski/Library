@@ -4,9 +4,7 @@ import com.epam.library.atheneum.BorrowBook;
 import com.epam.library.readers.Reader;
 import com.epam.library.readers.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class BookService implements BorrowBook {
@@ -53,10 +51,10 @@ public class BookService implements BorrowBook {
     public String borrow(Long readerId, String readerName, String readerSurname, String bookTitle) {
 
         Reader borrower;
-        Book book = new Book();
+        Book book;
 
         if (readerId!=null){
-        borrower = readerRepository.findById(readerId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
+        borrower = readerRepository.findById(readerId);
         } else {
             return "You must provide id.";
         }

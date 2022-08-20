@@ -16,21 +16,21 @@ public class ReaderController {
     }
 
     @PostMapping("")
-    public void save(@RequestParam String name,
-                     @RequestParam String surname,
-                     @RequestParam String email){
-        readerService.save(name, surname, email);
+    public Reader create(@RequestParam String name,
+                         @RequestParam String surname,
+                         @RequestParam String email) {
+        return readerService.create(name, surname, email);
     }
 
 
     @GetMapping("{id}")
-    public String findById(@PathVariable long id){
+    public String findById(@PathVariable long id) {
         return readerService.findById(id);
     }
 
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable long id){
+    public void delete(@PathVariable long id) {
         readerService.deleteById(id);
     }
 }

@@ -1,6 +1,7 @@
 package com.epam.library.readers;
 
 import com.epam.library.books.Book;
+import com.epam.library.database.DataTransferObject;
 
 import javax.persistence.*;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "READERS")
-public class Reader {
+public class Reader implements DataTransferObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +22,8 @@ public class Reader {
     List<Book> books;
 
 
-    public Long getId() {
+    @Override
+    public long getId() {
         return id;
     }
 
