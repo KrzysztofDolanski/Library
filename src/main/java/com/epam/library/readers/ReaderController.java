@@ -33,4 +33,6 @@ public class ReaderController {
     public void delete(@PathVariable long id) {
         readerService.deleteById(id);
     }
+
+
 }

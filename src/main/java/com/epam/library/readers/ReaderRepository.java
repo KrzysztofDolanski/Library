@@ -21,7 +21,6 @@ public class ReaderRepository {
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-
         dbConnector = new DatabaseConnectionManager(
                 props.getProperty("db.url"),
                 props.getProperty("db.username"),
@@ -62,4 +61,15 @@ public class ReaderRepository {
             readerDAO.deleteById(id);
         }
     }
+
+    public Reader findLastReader() {
+        try {
+            ReaderDAO readerDAO = new ReaderDAO(dbConnector.getConnection());
+            return readerDAO.findLastReader();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException();
+        }
+    }
 }
+

@@ -1,12 +1,13 @@
 package com.epam.library.books;
 
+import com.epam.library.database.DataTransferObject;
 import com.epam.library.readers.Reader;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "BOOKS")
-public class Book {
+public class Book implements DataTransferObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,6 +38,7 @@ public class Book {
         this.reader = reader;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -94,6 +96,7 @@ public class Book {
                 throw new IllegalStateException("Cannot save book without title");
             }
             Book book = new Book();
+            book.id = this.id;
             book.title = this.title;
             book.author = this.author;
             book.available = this.available;

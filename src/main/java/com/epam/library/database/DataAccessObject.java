@@ -8,8 +8,7 @@ import java.util.List;
 
 public abstract class DataAccessObject<T extends DataTransferObject> {
 
-    protected static final String READER_SEQUENCE = "readers_id_seq";
-    protected final static String LAST_VAL = "SELECT last_value FROM ";
+    protected static final String LAST_VAL = "SELECT id from ";
     protected final Connection connection;
 
     public DataAccessObject(Connection connection) {

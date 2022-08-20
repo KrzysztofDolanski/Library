@@ -9,65 +9,53 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookService implements BorrowBook {
 
-   private final BookRepository bookRepository;
-   private final ReaderRepository readerRepository;
+    private final BookRepository bookRepository;
+    private final ReaderRepository readerRepository;
 
-   @Autowired
+    @Autowired
     public BookService(BookRepository bookRepository, ReaderRepository readerRepository) {
         this.bookRepository = bookRepository;
-       this.readerRepository = readerRepository;
-   }
-
+        this.readerRepository = readerRepository;
+    }
 
     public BookDTO findById(Long bookId) {
-        BookDTO bookDTO = new BookDTO();
+        BookDTO bookDTO = null;
         try {
-            Book book = bookRepository.findById(bookId).orElseThrow();
-            bookDTO.setId(book.getId());
-            bookDTO.setTitle(book.getTitle());
-            bookDTO.setAuthor(book.getAuthor());
-            bookDTO.setAvailable(book.isAvailable());
-            bookDTO.setReader(book.getReader());
+            bookDTO = bookRepository.findById(bookId);
         } catch (BookNotFoundException e) {
             System.out.println(e.getMessage());
         }
         return bookDTO;
     }
 
-    public String save(String title, String author) {
-        Book book = new Book.Builder()
-                .title(title)
-                .author(author)
-                .available(true)
-                .build();
-        return bookRepository.save(book).toString();
+    public BookDTO save(String title, String author) {
+        return bookRepository.create(title, author);
     }
 
     public void delete(Long bookId) {
-       bookRepository.deleteById(bookId);
+        bookRepository.deleteById(bookId);
     }
 
     @Override
     public String borrow(Long readerId, String readerName, String readerSurname, String bookTitle) {
-
         Reader borrower;
-        Book book;
-
-        if (readerId!=null){
-        borrower = readerRepository.findById(readerId);
+        BookDTO bookDTO;
+        if (readerId != null) {
+            borrower = readerRepository.findById(readerId);
         } else {
             return "You must provide id.";
         }
-        if (borrower.getName().equals(readerName)&& borrower.getSurname().equals(readerSurname)){
-            book = bookRepository.findBookByTitle(bookTitle);
-            if (book.isAvailable()){
-                Long bookId = book.getId();
-                bookRepository.update(false, borrower, bookId);
+        if (borrower.getName().equals(readerName) && borrower.getSurname().equals(readerSurname)) {
+            bookDTO = bookRepository.findBookByTitle(bookTitle).stream().filter(book -> book.isAvailable() == true).findAny().orElseThrow();
+            if (bookDTO.isAvailable()) {
+                bookDTO.setReader(borrower);
+                bookDTO.setAvailable(false);
+                bookRepository.update(bookDTO);
             }
         } else {
             return "Readers values mismatch.";
         }
 
-       return "Book " + book.getTitle() + " successful rent";
+        return "Book " + bookDTO.getTitle() + " successful rent";
     }
 }

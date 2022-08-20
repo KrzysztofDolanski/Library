@@ -12,18 +12,18 @@ import java.util.Objects;
 public class Reader implements DataTransferObject {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String name;
-    String surname;
-    String email;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private String name;
+    private String surname;
+    private String email;
 
     @OneToMany(mappedBy = "reader", fetch = FetchType.EAGER)
     List<Book> books;
 
 
     @Override
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

@@ -17,12 +17,12 @@ public class BookController {
 
 
     @GetMapping("{bookId}")
-    public String findById(@PathVariable Long bookId) {
-        return bookService.findById(bookId).toString();
+    public BookDTO findById(@PathVariable Long bookId) {
+        return bookService.findById(bookId);
     }
 
     @PostMapping("")
-    public String save(@RequestParam String title,
+    public BookDTO save(@RequestParam String title,
                        @RequestParam String author) {
         return bookService.save(title, author);
     }

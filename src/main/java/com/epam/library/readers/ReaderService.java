@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReaderService {
 
-
     private final ReaderRepository readerRepository;
 
     @Autowired
@@ -29,5 +28,9 @@ public class ReaderService {
 
     void deleteById(long id) {
         readerRepository.deleteById(id);
+    }
+
+    Reader findLastReader(){
+        return readerRepository.findLastReader();
     }
 }

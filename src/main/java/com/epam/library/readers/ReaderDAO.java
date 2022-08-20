@@ -3,20 +3,21 @@ package com.epam.library.readers;
 import com.epam.library.books.Book;
 import com.epam.library.database.DataAccessObject;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReaderDAO extends DataAccessObject<Reader> {
 
+    private static final String READER_LAST_ID = " readers ORDER BY id DESC LIMIT 1";
 
-    private static final String FIND_BY_ID = "SELECT r.id, r.name, r.surname, r.email, b.id From readers r LEFT JOIN books b on r.id=b.reader_id where r.id=?";
+    private static final String FIND_BY_ID = "SELECT r.id, r.name, r.surname, r.email, b.id " +
+            "FROM readers r " +
+            "LEFT JOIN books b on r.id=b.reader_id " +
+            "WHERE r.id=?";
 
-    private static final String SAVE_READER = "INSERT INTO readers(name, surname, email) " +
-            "VALUES (?, ?, ?)";
+    private static final String SAVE_READER = "INSERT INTO readers(id, name, surname, email) " +
+            "VALUES (?, ?, ?, ?)";
 
     private static final String REMOVE_BY_ID = "DELETE FROM readers r WHERE r.id=?";
 
@@ -67,14 +68,15 @@ public class ReaderDAO extends DataAccessObject<Reader> {
 
     @Override
     public Reader create(Reader dto) {
-        try(PreparedStatement statement = this.connection.prepareStatement(SAVE_READER)){
-            statement.setString(1, dto.getName());
-            statement.setString(2, dto.getSurname());
-            statement.setString(3, dto.getEmail());
+        try (PreparedStatement statement = this.connection.prepareStatement(SAVE_READER)) {
+            int id = this.getLastVal(READER_LAST_ID);
+            statement.setLong(1, ++id);
+            statement.setString(2, dto.getName());
+            statement.setString(3, dto.getSurname());
+            statement.setString(4, dto.getEmail());
             statement.execute();
-            int id = this.getLastVal(READER_SEQUENCE);
             return this.findById(id);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException();
         }
@@ -82,11 +84,16 @@ public class ReaderDAO extends DataAccessObject<Reader> {
 
     @Override
     public void deleteById(long id) {
-        try(PreparedStatement statement = this.connection.prepareStatement(REMOVE_BY_ID)){
+        try (PreparedStatement statement = this.connection.prepareStatement(REMOVE_BY_ID)) {
             statement.setLong(1, id);
             statement.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public Reader findLastReader() {
+        int lastVal = this.getLastVal(READER_LAST_ID);
+        return findById(lastVal);
     }
 }
