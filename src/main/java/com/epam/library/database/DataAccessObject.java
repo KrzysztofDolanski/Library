@@ -11,20 +11,20 @@ public abstract class DataAccessObject<T extends DataTransferObject> {
     protected static final String LAST_VAL = "SELECT id from ";
     protected final Connection connection;
 
-    public DataAccessObject(Connection connection) {
+    protected DataAccessObject(Connection connection) {
         super();
         this.connection = connection;
     }
 
-    public abstract T findById(long id);
+    protected abstract T findById(long id);
 
-    public abstract List<T> findAll();
+    protected abstract List<T> findAll();
 
-    public abstract T update(T dto);
+    protected abstract T update(T dto);
 
-    public abstract T create(T dto);
+    protected abstract T create(T dto);
 
-    public abstract void deleteById(long id);
+    protected abstract void deleteById(long id);
 
     protected int getLastVal(String sequence){
         int key = 0;

@@ -28,7 +28,7 @@ public class ReaderRepository {
     }
 
 
-    public Reader findById(long id) {
+    Reader findById(long id) {
         ReaderDAO readerDAO = null;
         try {
             readerDAO = new ReaderDAO(dbConnector.getConnection());
@@ -39,7 +39,7 @@ public class ReaderRepository {
         return readerDAO.findById(id);
     }
 
-    public Reader create(Reader reader) {
+    Reader create(Reader reader) {
         ReaderDAO readerDAO = null;
         try {
             readerDAO = new ReaderDAO(dbConnector.getConnection());
@@ -50,7 +50,7 @@ public class ReaderRepository {
         return readerDAO.create(reader);
     }
 
-    public void deleteById(long id) {
+    void deleteById(long id) {
         ReaderDAO readerDAO = null;
         try {
             readerDAO = new ReaderDAO(dbConnector.getConnection());
@@ -62,7 +62,7 @@ public class ReaderRepository {
         }
     }
 
-    public Reader findLastReader() {
+    Reader findLastReader() {
         try {
             ReaderDAO readerDAO = new ReaderDAO(dbConnector.getConnection());
             return readerDAO.findLastReader();

@@ -21,12 +21,12 @@ public class ReaderDAO extends DataAccessObject<Reader> {
 
     private static final String REMOVE_BY_ID = "DELETE FROM readers r WHERE r.id=?";
 
-    public ReaderDAO(Connection connection) {
+    protected ReaderDAO(Connection connection) {
         super(connection);
     }
 
     @Override
-    public Reader findById(long id) {
+    protected Reader findById(long id) {
         Reader reader = new Reader();
         try (PreparedStatement statement = this.connection.prepareStatement(FIND_BY_ID)) {
             statement.setLong(1, id);
@@ -57,17 +57,17 @@ public class ReaderDAO extends DataAccessObject<Reader> {
     }
 
     @Override
-    public List<Reader> findAll() {
+    protected List<Reader> findAll() {
         return null;
     }
 
     @Override
-    public Reader update(Reader dto) {
+    protected Reader update(Reader dto) {
         return null;
     }
 
     @Override
-    public Reader create(Reader dto) {
+    protected Reader create(Reader dto) {
         try (PreparedStatement statement = this.connection.prepareStatement(SAVE_READER)) {
             int id = this.getLastVal(READER_LAST_ID);
             statement.setLong(1, ++id);
@@ -83,7 +83,7 @@ public class ReaderDAO extends DataAccessObject<Reader> {
     }
 
     @Override
-    public void deleteById(long id) {
+    protected void deleteById(long id) {
         try (PreparedStatement statement = this.connection.prepareStatement(REMOVE_BY_ID)) {
             statement.setLong(1, id);
             statement.execute();
@@ -92,8 +92,9 @@ public class ReaderDAO extends DataAccessObject<Reader> {
         }
     }
 
-    public Reader findLastReader() {
+    Reader findLastReader() {
         int lastVal = this.getLastVal(READER_LAST_ID);
         return findById(lastVal);
     }
+
 }

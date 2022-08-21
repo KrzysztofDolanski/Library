@@ -16,7 +16,7 @@ public class BookRepository {
     private final DatabaseConnectionManager dbConnector;
 
     @Autowired
-    public BookRepository() {
+    BookRepository() {
         var props = new Properties();
         try {
             props.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
@@ -30,7 +30,7 @@ public class BookRepository {
     }
 
 
-    public BookDTO findById(long id) {
+    BookDTO findById(long id) {
         BookDAO bookDAO = null;
         try {
             bookDAO = new BookDAO(dbConnector.getConnection());
@@ -41,7 +41,7 @@ public class BookRepository {
         return BookMapperToDTO.mapToDTO(bookDAO.findById(id));
     }
 
-    public BookDTO create(String title, String author) {
+    BookDTO create(String title, String author) {
         Book book = new Book.Builder()
                 .title(title)
                 .author(author)
@@ -57,7 +57,7 @@ public class BookRepository {
         return BookMapperToDTO.mapToDTO(bookDAO.create(book));
     }
 
-    public void deleteById(long id) {
+    void deleteById(long id) {
         BookDAO bookDAO = null;
         try {
             bookDAO = new BookDAO(dbConnector.getConnection());
@@ -70,7 +70,7 @@ public class BookRepository {
     }
 
 
-    public BookDTO update(BookDTO bookDTO){
+    BookDTO update(BookDTO bookDTO) {
         BookDAO bookDAO = null;
         BookDTO updatedBook = null;
         try {
@@ -86,23 +86,35 @@ public class BookRepository {
         return updatedBook;
     }
 
-    public BookDTO findLastBook() {
+    List<BookDTO> findBookByTitle(String bookTitle) {
         try {
             BookDAO bookDAO = new BookDAO(dbConnector.getConnection());
-            return BookMapperToDTO.mapToDTO(bookDAO.findLastBook());
+            return bookDAO.findByTitle(bookTitle).stream().map(BookMapperToDTO::mapToDTO).collect(Collectors.toList());
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException();
         }
     }
 
-    public List<BookDTO> findBookByTitle(String bookTitle) {
-        try{
+    void deleteByTitleAuthorAvailable(String title, String author, boolean available) {
+        try {
             BookDAO bookDAO = new BookDAO(dbConnector.getConnection());
-            return bookDAO.findByTitle(bookTitle).stream().map(BookMapperToDTO::mapToDTO).collect(Collectors.toList());
-        } catch (SQLException e){
+            bookDAO.deleteByTitleAuthorAvailable(title, author, available);
+        } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException();
+        }
+    }
+
+    void deleteByTitle(String title) {
+        BookDAO bookDAO = null;
+        try {
+            bookDAO = new BookDAO(dbConnector.getConnection());
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        if (bookDAO != null) {
+            bookDAO.deleteByTitle(title);
         }
     }
 }

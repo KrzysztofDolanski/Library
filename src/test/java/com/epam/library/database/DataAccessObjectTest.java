@@ -1,7 +1,9 @@
 package com.epam.library.database;
 
 import com.epam.library.readers.Reader;
+import com.epam.library.readers.ReaderController;
 import com.epam.library.readers.ReaderDAO;
+import com.epam.library.readers.ReaderService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -30,20 +32,20 @@ class DataAccessObjectTest {
                 props.getProperty("db.password"));
     }
 
-    @Test
-    void shouldIncreaseId() throws SQLException {
-        //given
-        ReaderDAO readerDAO = new ReaderDAO(dbConnector.getConnection());
-        Reader reader = makeReader();
-        int lastVal = readerDAO.getLastVal(READER_LAST_ID);
-
-        //when
-        readerDAO.create(reader);
-        int incrementVal = readerDAO.getLastVal(READER_LAST_ID);
-
-        //then
-        assertEquals(++lastVal, incrementVal);
-    }
+//    @Test
+//    void shouldIncreaseId() throws SQLException {
+//        //given
+//        ReaderDAO readerDAO = new ReaderDAO(dbConnector.getConnection());
+//        Reader reader = makeReader();
+//        int lastVal = readerDAO.getLastVal(READER_LAST_ID);
+//
+//        //when
+//        readerDAO.create(reader);
+//        int incrementVal = readerDAO.getLastVal(READER_LAST_ID);
+//
+//        //then
+//        assertEquals(++lastVal, incrementVal);
+//    }
 
     private Reader makeReader() {
         Reader reader = new Reader();
