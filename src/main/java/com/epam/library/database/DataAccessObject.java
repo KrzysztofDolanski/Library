@@ -40,5 +40,4 @@ public abstract class DataAccessObject<T extends DataTransferObject> {
             throw new RuntimeException(e);
         }
     }
-
 }
