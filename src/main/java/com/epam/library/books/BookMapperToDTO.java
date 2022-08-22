@@ -8,6 +8,7 @@ public class BookMapperToDTO {
         bookDTO.setAuthor(book.getAuthor());
         bookDTO.setAvailable(book.isAvailable());
         bookDTO.setReader(book.getReader());
+        bookDTO.setDate(book.getDate());
         return bookDTO;
     }
 
@@ -18,6 +19,7 @@ public class BookMapperToDTO {
                 .author(bookDTO.getAuthor())
                 .available(bookDTO.isAvailable())
                 .reader(bookDTO.getReader())
+                .date(bookDTO.getDate())
                 .build();
     }
 }

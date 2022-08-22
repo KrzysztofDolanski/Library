@@ -1,3 +1,4 @@
+SET TIME ZONE 'UTC';
 \c library_db;
 
 

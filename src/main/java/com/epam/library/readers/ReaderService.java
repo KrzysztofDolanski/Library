@@ -33,4 +33,8 @@ public class ReaderService {
     Reader findLastReader(){
         return readerRepository.findLastReader();
     }
+
+    public void deleteAllReaders() {
+        readerRepository.deleteAllReaders();
+    }
 }

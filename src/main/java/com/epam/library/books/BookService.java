@@ -30,7 +30,11 @@ public class BookService {
     }
 
     List<BookDTO> findByTitle(String title) {
-        return bookRepository.findBookByTitle(title);
+        return bookRepository.findBooksByTitle(title);
+    }
+
+    List<BookDTO> findByDate(String startDate, String endDate){
+        return bookRepository.findBooksByDate(startDate, endDate);
     }
 
     BookDTO save(String title, String author) {
@@ -50,7 +54,7 @@ public class BookService {
             return "You must provide id.";
         }
         if (borrower.getName().equals(readerName) && borrower.getSurname().equals(readerSurname)) {
-            bookDTO = bookRepository.findBookByTitle(bookTitle).stream().filter(BookDTO::isAvailable).findAny().orElseThrow();
+            bookDTO = bookRepository.findBooksByTitle(bookTitle).stream().filter(BookDTO::isAvailable).findAny().orElseThrow();
             if (bookDTO.isAvailable()) {
                 bookDTO.setReader(borrower);
                 bookDTO.setAvailable(false);
@@ -69,5 +73,9 @@ public class BookService {
 
     void deleteByTitle(String title) {
         bookRepository.deleteByTitle(title);
+    }
+
+    void deleteAllBooks() {
+        bookRepository.deleteAllBooks();
     }
 }

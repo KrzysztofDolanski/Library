@@ -6,10 +6,33 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 import java.util.Properties;
+import java.util.Scanner;
 
+/**
+ * This class if for enable execute statements via terminal.
+ */
 public class StatementExecutor {
 
-    public String execute(String query) throws IOException, SQLException {
+    /**
+     * This method allows to execute statement from terminal by using java.util.Scanner.
+     */
+    public void writeStatementFromTerminal() {
+        int tries = 6;
+        Scanner sc = new Scanner(System.in);
+        while (tries>0){
+            String statement = sc.nextLine();
+            try {
+                String execute = this.execute(statement);
+                System.err.println(execute);
+            } catch (IOException | SQLException e) {
+                throw new RuntimeException(e);
+            }
+            tries--;
+        }
+        sc.close();
+    }
+
+    private String execute(String query) throws IOException, SQLException {
         var props = new Properties();
         props.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
         String url = props.getProperty("db.url");
@@ -29,13 +52,11 @@ public class StatementExecutor {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-
         return sb.toString();
     }
 
-    private void statementProcedure(ResultSet resultSet, String query, StringBuilder sb) throws SQLException, IOException {
 
+    private void statementProcedure(ResultSet resultSet, String query, StringBuilder sb) throws SQLException, IOException {
         String clear = "";
         if (query.charAt(query.length() - 1) == ';') {
             clear += query.substring(0, query.length() - 1);

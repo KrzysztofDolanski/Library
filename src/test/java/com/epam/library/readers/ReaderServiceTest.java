@@ -1,5 +1,6 @@
 package com.epam.library.readers;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,11 @@ class ReaderServiceTest {
     @Test
     void shouldFindReaderById(){
         //given
+        repository.create(makeReader());
+        repository.create(makeReader());
+        repository.create(makeReader());
+        repository.create(makeReader());
+        repository.create(makeReader());
         Reader byId = repository.findById(5);
         //when
         long id = byId.getId();
@@ -25,6 +31,7 @@ class ReaderServiceTest {
     @Test
     void shouldSaveReaderInDatabase(){
         //given
+        repository.create(makeReader());
         Reader lastReader = repository.findLastReader();
         Reader reader = makeReader();
         long lastId = lastReader.getId();
@@ -41,6 +48,7 @@ class ReaderServiceTest {
     @Test
     void shouldDeleteReaderById(){
         //given
+        repository.create(makeReader());
         Reader lastReader = repository.findLastReader();
         //when
         Reader readerById = repository.findById(lastReader.getId());
@@ -60,5 +68,11 @@ class ReaderServiceTest {
         reader.setSurname("Kowalski");
         reader.setEmail("kowalski@kowalski.eu");
         return reader;
+    }
+
+    @AfterAll
+    static void clearTable(){
+        ReaderService readerService = new ReaderService(new ReaderRepository());
+        readerService.deleteAllReaders();
     }
 }

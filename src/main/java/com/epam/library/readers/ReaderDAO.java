@@ -20,6 +20,7 @@ public class ReaderDAO extends DataAccessObject<Reader> {
             "VALUES (?, ?, ?, ?)";
 
     private static final String REMOVE_BY_ID = "DELETE FROM readers r WHERE r.id=?";
+    private static final String REMOVE_ALL = "DELETE FROM readers";
 
     protected ReaderDAO(Connection connection) {
         super(connection);
@@ -97,4 +98,11 @@ public class ReaderDAO extends DataAccessObject<Reader> {
         return findById(lastVal);
     }
 
+    public void deleteAllReaders() {
+        try (PreparedStatement statement = this.connection.prepareStatement(REMOVE_ALL)) {
+            statement.execute();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
 }

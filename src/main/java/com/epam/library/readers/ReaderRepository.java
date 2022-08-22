@@ -28,7 +28,7 @@ public class ReaderRepository {
     }
 
 
-    Reader findById(long id) {
+    public Reader findById(long id) {
         ReaderDAO readerDAO = null;
         try {
             readerDAO = new ReaderDAO(dbConnector.getConnection());
@@ -69,6 +69,18 @@ public class ReaderRepository {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException();
+        }
+    }
+
+    public void deleteAllReaders() {
+        ReaderDAO readerDAO = null;
+        try {
+            readerDAO = new ReaderDAO(dbConnector.getConnection());
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        if (readerDAO != null) {
+            readerDAO.deleteAllReaders();
         }
     }
 }

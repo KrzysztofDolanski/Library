@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -46,6 +49,7 @@ public class BookRepository {
                 .title(title)
                 .author(author)
                 .available(true)
+                .date(Date.from(Instant.ofEpochSecond(LocalDateTime.now().getSecond())))
                 .build();
         BookDAO bookDAO = null;
         try {
@@ -86,10 +90,21 @@ public class BookRepository {
         return updatedBook;
     }
 
-    List<BookDTO> findBookByTitle(String bookTitle) {
+    List<BookDTO> findBooksByTitle(String bookTitle) {
         try {
             BookDAO bookDAO = new BookDAO(dbConnector.getConnection());
             return bookDAO.findByTitle(bookTitle).stream().map(BookMapperToDTO::mapToDTO).collect(Collectors.toList());
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException();
+        }
+    }
+
+
+    List<BookDTO> findBooksByDate(String startDate, String endDate){
+        try {
+            BookDAO bookDAO = new BookDAO(dbConnector.getConnection());
+            return bookDAO.findByDate(startDate, endDate).stream().map(BookMapperToDTO::mapToDTO).collect(Collectors.toList());
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException();
@@ -115,6 +130,18 @@ public class BookRepository {
         }
         if (bookDAO != null) {
             bookDAO.deleteByTitle(title);
+        }
+    }
+
+    void deleteAllBooks() {
+        BookDAO bookDAO = null;
+        try {
+            bookDAO = new BookDAO(dbConnector.getConnection());
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        if (bookDAO != null) {
+            bookDAO.deleteAllBooks();
         }
     }
 }

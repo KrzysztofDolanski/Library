@@ -2,6 +2,9 @@ package com.epam.library.books;
 
 import com.epam.library.readers.Reader;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 public class BookDTO {
 
     private Long id;
@@ -10,15 +13,23 @@ public class BookDTO {
     private boolean available;
     private Reader reader;
 
+    private Date date;
+
+    public static final DateTimeFormatter DATE_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern(
+                    "dd/MM/uuuu HH:mm:ss"
+            );
+
     public BookDTO() {
     }
 
-    public BookDTO(Long id, String title, String author, boolean available, Reader reader) {
+    public BookDTO(Long id, String title, String author, boolean available, Reader reader, Date date) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.available = available;
         this.reader = reader;
+        this.date = date;
     }
 
     public Long getId() {
@@ -61,6 +72,14 @@ public class BookDTO {
         this.reader = reader;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     @Override
     public String toString() {
         return "BookDTO{" +
@@ -69,6 +88,7 @@ public class BookDTO {
                 ", author='" + author + '\'' +
                 ", available=" + available +
                 ", reader=" + reader +
+                ", zone=" + date +
                 '}';
     }
 }

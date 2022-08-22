@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/books")
 public class BookController {
@@ -19,6 +21,18 @@ public class BookController {
     @GetMapping("{bookId}")
     public BookDTO findById(@PathVariable Long bookId) {
         return bookService.findById(bookId);
+    }
+
+    @GetMapping("{bookTitle}")
+    public List<BookDTO> findByTitle(@PathVariable String bookTitle) {
+        return bookService.findByTitle(bookTitle);
+    }
+
+
+    @GetMapping("")
+    public List<BookDTO> findByDate(@RequestParam String startDate,
+                                    @RequestParam String endDate) {
+        return bookService.findByDate(startDate, endDate);
     }
 
     @PostMapping("")
@@ -40,4 +54,5 @@ public class BookController {
                              @RequestParam String title){
         return bookService.borrow(readerId, readerName, readerSurname, title);
     }
+
 }
