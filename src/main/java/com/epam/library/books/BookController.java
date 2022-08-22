@@ -23,8 +23,8 @@ public class BookController {
         return bookService.findById(bookId);
     }
 
-    @GetMapping("{bookTitle}")
-    public List<BookDTO> findByTitle(@PathVariable String bookTitle) {
+    @GetMapping("")
+    public List<BookDTO> findByTitle(@RequestParam String bookTitle) {
         return bookService.findByTitle(bookTitle);
     }
 
