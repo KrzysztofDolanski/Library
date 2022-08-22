@@ -32,8 +32,9 @@ public class BookDAO extends DataAccessObject<Book> {
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id " +
             "WHERE b.id=?";
-    private static final String FIND_ALL_BY_TITLE = "SELECT b.id, b.title, b.author, b.available, b.reader_id " +
+    private static final String FIND_ALL_BY_TITLE = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.date " +
             "FROM books b " +
+            "LEFT JOIN readers r on b.reader_id=r.id " +
             "WHERE b.title=?";
 
     private static final String FIND_ALL_BY_DATE = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.date " +
