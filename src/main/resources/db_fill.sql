@@ -2,6 +2,19 @@ SET TIME ZONE 'UTC';
 \c library_db;
 
 
+CREATE FUNCTION reader_check_name_function()
+    RETURNS TRIGGER
+    LANGUAGE PLPGSQL
+BEGIN
+IF (NEW.r.name REGEXP '^[A-Za-z]\\w{5, 29}$' = 0) SET RAISE INFO 'Readers name should have only letters.'
+END;
+
+
+CREATE TRIGGER reader_check_name
+    BEFORE INSERT
+    ON readers FOR EACH ROW
+    EXECUTE PROCEDURE reader_check_name_function;
+
 INSERT INTO BOOKS (id, author, title, available)
 VALUES (1, 'Nela ', '10 NIESAMOWITYCH PRZYGÓD NELI', true),
        (3, 'A. Griffiths', '39 PIĘTROWY DOMEK NA DRZEWIE', true),

@@ -23,9 +23,9 @@ public class BookController {
         return bookService.findById(bookId);
     }
 
-    @GetMapping("")
-    public List<BookDTO> findByTitle(@RequestParam String bookTitle) {
-        return bookService.findByTitle(bookTitle);
+    @GetMapping("/title{title}")
+    public List<BookDTO> findByTitle(@PathVariable String title) {
+        return bookService.findByTitle(title);
     }
 
 
