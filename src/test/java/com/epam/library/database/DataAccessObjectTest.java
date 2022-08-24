@@ -1,17 +1,10 @@
 package com.epam.library.database;
 
 import com.epam.library.readers.Reader;
-import com.epam.library.readers.ReaderController;
-import com.epam.library.readers.ReaderDAO;
-import com.epam.library.readers.ReaderService;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Properties;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class DataAccessObjectTest {
