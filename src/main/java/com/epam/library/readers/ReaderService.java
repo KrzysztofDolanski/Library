@@ -3,6 +3,8 @@ package com.epam.library.readers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReaderService {
 
@@ -17,8 +19,8 @@ public class ReaderService {
         return readerRepository.create(reader);
     }
 
-    String findById(long id) {
-        return readerRepository.findById(id).toString();
+    Reader findById(long id) {
+        return readerRepository.findById(id);
     }
 
 
@@ -36,5 +38,9 @@ public class ReaderService {
 
     Reader update(Reader reader) {
         return readerRepository.update(reader);
+    }
+
+    public List<Reader> findByNameAndSurname(String readerName, String readerSurname) {
+        return readerRepository.findByNameAndSurname(readerName, readerSurname);
     }
 }

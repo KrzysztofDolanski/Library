@@ -1,7 +1,7 @@
 package com.epam.library.books;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,40 +17,43 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping("{bookId}")
-    public BookDTO findById(@PathVariable Long bookId) {
+    @RequestMapping(value = "", params = "bookId", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BookDTO findById(@RequestParam("bookId") Long bookId) {
         return bookService.findById(bookId);
     }
 
-    @GetMapping("/title{title}")
-    public List<BookDTO> findByTitle(@PathVariable String title) {
+    @RequestMapping(value = "", params = "title", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<BookDTO> findByTitle(@RequestParam("title") String title) {
         return bookService.findByTitle(title);
     }
 
-
     @GetMapping("")
-    public List<BookDTO> findByDate(@RequestParam String startDate,
-                                    @RequestParam String endDate) {
+    public List<BookDTO> findAllBooks() {
+        return bookService.findAll();
+    }
+
+    @RequestMapping(value = "", params = {"startDate", "endDate"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<BookDTO> findByDate(@RequestParam("startDate") String startDate,
+                                    @RequestParam("endDate") String endDate) {
         return bookService.findByDate(startDate, endDate);
     }
 
     @PostMapping("")
     public BookDTO save(@RequestParam String title,
-                       @RequestParam String author) {
+                        @RequestParam String author) {
         return bookService.save(title, author);
     }
 
-    @DeleteMapping("{bookId}")
-    public void delete(@PathVariable Long bookId) {
+    @DeleteMapping(value = "", params = "bookId", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void deleteById(@RequestParam("bookId") Long bookId) {
         bookService.delete(bookId);
     }
 
-
     @PutMapping("")
     public BookDTO borrowBook(@RequestParam long readerId,
-                             @RequestParam String readerName,
-                             @RequestParam String readerSurname,
-                             @RequestParam String title){
+                              @RequestParam String readerName,
+                              @RequestParam String readerSurname,
+                              @RequestParam String title) {
         return bookService.borrow(readerId, readerName, readerSurname, title);
     }
 

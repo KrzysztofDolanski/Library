@@ -18,7 +18,7 @@ public class BookRepository {
 
     private final DatabaseConnectionManager dbConnector;
 
-    @Autowired
+
     BookRepository() {
         var props = new Properties();
         try {
@@ -142,6 +142,15 @@ public class BookRepository {
         }
         if (bookDAO != null) {
             bookDAO.deleteAllBooks();
+        }
+    }
+    List<BookDTO> findAll() {
+        try {
+            BookDAO bookDAO = new BookDAO(dbConnector.getConnection());
+            return bookDAO.findAll().stream().map(BookMapper::mapToDTO).collect(Collectors.toList());
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException();
         }
     }
 }

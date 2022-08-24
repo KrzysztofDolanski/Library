@@ -38,6 +38,23 @@ class BookDAOTest {
 
 
     @Test
+    void shouldReturnNumberOfAllBooks(){
+        BookDAO bookDAO;
+        try {
+            bookDAO = new BookDAO(getConnection());
+            jdbcTemplate.execute(
+                    "CREATE TABLE IF NOT EXISTS readers(id SERIAL PRIMARY KEY, name VARCHAR(250), surname VARCHAR(250), email VARCHAR(200));\n" +
+                            "CREATE TABLE IF NOT EXISTS books(id SERIAL, title VARCHAR(250), author VARCHAR(250), available BOOLEAN, reader_id INTEGER, rent_date DATE NOT NULL DEFAULT CURRENT_DATE, PRIMARY KEY (id), CONSTRAINT fk_reader FOREIGN KEY (reader_id) REFERENCES readers(id));");
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        assertTrue(bookDAO.findAll().isEmpty());
+
+    }
+
+    @Test
     void shouldFindBookByTitle() {
         //given
         BookDAO bookDAO;

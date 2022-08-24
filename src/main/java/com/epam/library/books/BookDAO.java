@@ -45,7 +45,7 @@ public class BookDAO extends DataAccessObject<Book> {
             "WHERE id IN ( " +
             "SELECT id FROM " +
             "books WHERE title = ? AND author = ? and available = ? LIMIT 1)";
-    private static final String REMOVE_ALL = "DELETE FROM books";
+    private static final String REMOVE_ALL_BOOKS = "DELETE FROM books";
     private static final String FIND_ALL_BOOKS = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date " +
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id ";
@@ -242,7 +242,7 @@ public class BookDAO extends DataAccessObject<Book> {
     }
 
     void deleteAllBooks() {
-        try (PreparedStatement statement = this.connection.prepareStatement(REMOVE_ALL)) {
+        try (PreparedStatement statement = this.connection.prepareStatement(REMOVE_ALL_BOOKS)) {
             statement.execute();
         } catch (SQLException e) {
             System.err.println(e.getMessage());

@@ -80,4 +80,8 @@ public class BookService {
     void deleteAllBooks() {
         bookRepository.deleteAllBooks();
     }
+
+    public List<BookDTO> findAll() {
+        return bookRepository.findAll();
+    }
 }
