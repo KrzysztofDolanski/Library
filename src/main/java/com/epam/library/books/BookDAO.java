@@ -46,6 +46,9 @@ public class BookDAO extends DataAccessObject<Book> {
             "SELECT id FROM " +
             "books WHERE title = ? AND author = ? and available = ? LIMIT 1)";
     private static final String REMOVE_ALL = "DELETE FROM books";
+    private static final String FIND_ALL_BOOKS = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date " +
+            "FROM books b " +
+            "LEFT JOIN readers r on b.reader_id=r.id ";
 
     BookDAO(Connection connection) {
         super(connection);
@@ -82,7 +85,30 @@ public class BookDAO extends DataAccessObject<Book> {
 
     @Override
     protected List<Book> findAll() {
-        return null;
+        List<Book> books = new ArrayList<>();
+        try (PreparedStatement statement = this.connection.prepareStatement(FIND_ALL_BOOKS)) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Book book = new Book();
+                Reader reader = new Reader();
+                book.setId(resultSet.getLong(1));
+                book.setTitle(resultSet.getString(2));
+                book.setAuthor(resultSet.getString(3));
+                book.setAvailable(resultSet.getBoolean(4));
+
+                if (!book.isAvailable()) {
+                    reader.setId(resultSet.getLong(5));
+                    reader.setName(resultSet.getString(6));
+                    reader.setSurname(resultSet.getString(7));
+                    reader.setEmail(resultSet.getString(8));
+                }
+                book.setReader(reader);
+                books.add(book);
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return books;
     }
 
     @Override
@@ -110,7 +136,6 @@ public class BookDAO extends DataAccessObject<Book> {
             statement.setString(2, dto.getTitle());
             statement.setString(3, dto.getAuthor());
             statement.setBoolean(4, true);
-
             statement.setDate(5, java.sql.Date.valueOf(LocalDate.now()));
             statement.execute();
             return this.findById(id);
@@ -154,6 +179,7 @@ public class BookDAO extends DataAccessObject<Book> {
                     reader.setSurname(resultSet.getString(7));
                     reader.setEmail(resultSet.getString(8));
                 }
+                book.setRent_date(resultSet.getDate(9));
                 book.setReader(reader);
                 books.add(book);
             }

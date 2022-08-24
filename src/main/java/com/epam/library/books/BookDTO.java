@@ -15,11 +15,6 @@ public class BookDTO {
 
     private Date date;
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER =
-            DateTimeFormatter.ofPattern(
-                    "dd/MM/uuuu HH:mm:ss"
-            );
-
     public BookDTO() {
     }
 

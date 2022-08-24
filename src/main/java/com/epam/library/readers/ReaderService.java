@@ -13,11 +13,7 @@ public class ReaderService {
         this.readerRepository = readerRepository;
     }
 
-    Reader create(String name, String surname, String email) {
-        Reader reader = new Reader();
-        reader.setName(name);
-        reader.setSurname(surname);
-        reader.setEmail(email);
+    Reader create(Reader reader) {
         return readerRepository.create(reader);
     }
 
@@ -30,7 +26,7 @@ public class ReaderService {
         readerRepository.deleteById(id);
     }
 
-    Reader findLastReader(){
+    Reader findLastReader() {
         return readerRepository.findLastReader();
     }
 

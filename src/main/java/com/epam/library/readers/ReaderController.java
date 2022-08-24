@@ -16,10 +16,8 @@ public class ReaderController {
     }
 
     @PostMapping("")
-    public Reader create(@RequestParam String name,
-                         @RequestParam String surname,
-                         @RequestParam String email) {
-        return readerService.create(name, surname, email);
+    public Reader create(@RequestBody Reader reader) {
+        return readerService.create(reader);
     }
 
 

@@ -21,6 +21,9 @@ public class ReaderDAO extends DataAccessObject<Reader> {
 
     private static final String REMOVE_BY_ID = "DELETE FROM readers r WHERE r.id=?";
     private static final String REMOVE_ALL = "DELETE FROM readers";
+    private static final String FIND_ALL_READERS = "SELECT r.id, r.name, r.surname, r.email, b.id, b.title, b.author, b.available, b.rent_date" +
+            "FROM readers r " +
+            "LEFT JOIN books b on r.id=b.reader_id ";
 
     protected ReaderDAO(Connection connection) {
         super(connection);
@@ -59,7 +62,32 @@ public class ReaderDAO extends DataAccessObject<Reader> {
 
     @Override
     protected List<Reader> findAll() {
-        return null;
+        List<Reader> readers = new ArrayList<>();
+        try (PreparedStatement statement = this.connection.prepareStatement(FIND_ALL_READERS)) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Reader reader = new Reader();
+                List<Book> books = new ArrayList<>();
+                Book book = new Book();
+                reader.setId(resultSet.getLong(1));
+                reader.setName(resultSet.getString(2));
+                reader.setSurname(resultSet.getString(3));
+                reader.setEmail(resultSet.getString(4));
+
+                book.setId(resultSet.getLong(5));
+                book.setTitle(resultSet.getString(6));
+                book.setAuthor(resultSet.getString(7));
+                book.setAvailable(resultSet.getBoolean(8));
+                book.setRent_date(resultSet.getDate(9));
+                books.add(book);
+
+                reader.setBooks(books);
+                readers.add(reader);
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return readers;
     }
 
     @Override
