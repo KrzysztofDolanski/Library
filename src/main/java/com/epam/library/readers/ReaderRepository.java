@@ -72,7 +72,7 @@ public class ReaderRepository {
         }
     }
 
-    public void deleteAllReaders() {
+    void deleteAllReaders() {
         ReaderDAO readerDAO = null;
         try {
             readerDAO = new ReaderDAO(dbConnector.getConnection());
@@ -81,6 +81,16 @@ public class ReaderRepository {
         }
         if (readerDAO != null) {
             readerDAO.deleteAllReaders();
+        }
+    }
+
+    Reader update(Reader reader) {
+        try {
+            ReaderDAO readerDAO = new ReaderDAO(dbConnector.getConnection());
+            return readerDAO.update(reader);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException();
         }
     }
 }

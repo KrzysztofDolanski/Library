@@ -30,7 +30,11 @@ public class ReaderService {
         return readerRepository.findLastReader();
     }
 
-    public void deleteAllReaders() {
+    void deleteAllReaders() {
         readerRepository.deleteAllReaders();
+    }
+
+    Reader update(Reader reader) {
+        return readerRepository.update(reader);
     }
 }

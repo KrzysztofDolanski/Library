@@ -24,6 +24,9 @@ public class ReaderDAO extends DataAccessObject<Reader> {
     private static final String FIND_ALL_READERS = "SELECT r.id, r.name, r.surname, r.email, b.id, b.title, b.author, b.available, b.rent_date" +
             "FROM readers r " +
             "LEFT JOIN books b on r.id=b.reader_id ";
+    private static final String UPDATE_READER = "UPDATE readers " +
+            "SET id = ?, name = ?, surname = ?, email = ? " +
+            "WHERE id = ?";;
 
     protected ReaderDAO(Connection connection) {
         super(connection);
@@ -92,7 +95,18 @@ public class ReaderDAO extends DataAccessObject<Reader> {
 
     @Override
     protected Reader update(Reader dto) {
-        return null;
+        try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_READER)) {
+            statement.setLong(1, dto.getId());
+            statement.setString(2, dto.getName());
+            statement.setString(3, dto.getSurname());
+            statement.setString(4, dto.getEmail());
+            statement.setLong(5, dto.getId());
+            statement.execute();
+            return this.findById(dto.getId());
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException();
+        }
     }
 
     @Override

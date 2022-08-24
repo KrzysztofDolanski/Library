@@ -32,4 +32,9 @@ public class ReaderController {
         readerService.deleteById(id);
     }
 
+    @PutMapping("")
+    public Reader update(@RequestBody Reader reader){
+        return readerService.update(reader);
+    }
+
 }
