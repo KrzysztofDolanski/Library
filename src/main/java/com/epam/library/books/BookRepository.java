@@ -1,156 +1,66 @@
 package com.epam.library.books;
 
-import com.epam.library.database.DatabaseConnectionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 @Repository
 public class BookRepository {
 
-    private final DatabaseConnectionManager dbConnector;
+    private final BookDAOCreator bookDAOCreator;
 
-
-    BookRepository() {
-        var props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
-        dbConnector = new DatabaseConnectionManager(
-                props.getProperty("db.url"),
-                props.getProperty("db.username"),
-                props.getProperty("db.password"));
+    @Autowired
+    public BookRepository(BookDAOCreator bookDAOCreator) {
+        this.bookDAOCreator = bookDAOCreator;
     }
 
 
     BookDTO findById(long id) {
-        BookDAO bookDAO = null;
-        try {
-            bookDAO = new BookDAO(dbConnector.getConnection());
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException(e);
-        }
-        return BookMapper.mapToDTO(bookDAO.findById(id));
+        return BookMapper.mapToDTO(bookDAOCreator.getReaderDAO().findById(id));
     }
 
     BookDTO create(String title, String author) {
-        Book book = new Book.Builder()
-                .title(title)
-                .author(author)
-                .available(true)
-                .date(Date.from(Instant.ofEpochSecond(LocalDateTime.now().getSecond())))
-                .build();
-        BookDAO bookDAO = null;
-        try {
-            bookDAO = new BookDAO(dbConnector.getConnection());
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException();
-        }
-        return BookMapper.mapToDTO(bookDAO.create(book));
+        Book book = new Book.Builder().title(title).author(author).build();
+        return BookMapper.mapToDTO(bookDAOCreator.getReaderDAO().create(book));
     }
 
     void deleteById(long id) {
-        BookDAO bookDAO = null;
-        try {
-            bookDAO = new BookDAO(dbConnector.getConnection());
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        if (bookDAO != null) {
-            bookDAO.deleteById(id);
-        }
+        bookDAOCreator.getReaderDAO().deleteById(id);
     }
 
 
     BookDTO update(BookDTO bookDTO) {
-        BookDAO bookDAO = null;
-        BookDTO updatedBook = null;
-        try {
-            bookDAO = new BookDAO(dbConnector.getConnection());
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        if (bookDAO != null) {
-            Book book = BookMapper.mapToBook(bookDTO);
-            Book update = bookDAO.update(book);
-            updatedBook = BookMapper.mapToDTO(update);
-        }
-        return updatedBook;
+        return BookMapper.mapToDTO(bookDAOCreator.getReaderDAO().update(BookMapper.mapToBook(bookDTO)));
     }
 
     List<BookDTO> findBooksByTitle(String bookTitle) {
-        try {
-            BookDAO bookDAO = new BookDAO(dbConnector.getConnection());
-            return bookDAO.findByTitle(bookTitle).stream().map(BookMapper::mapToDTO).collect(Collectors.toList());
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException();
-        }
+        return bookDAOCreator.getReaderDAO().findByTitle(bookTitle).stream().map(BookMapper::mapToDTO).toList();
     }
 
 
-    List<BookDTO> findBooksByDate(String startDate, String endDate){
-        try {
-            BookDAO bookDAO = new BookDAO(dbConnector.getConnection());
-            return bookDAO.findByDate(startDate, endDate).stream().map(BookMapper::mapToDTO).collect(Collectors.toList());
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException();
-        }
+    List<BookDTO> findBooksByDate(String startDate, String endDate) {
+        return bookDAOCreator.getReaderDAO().findByDate(startDate, endDate).stream().map(BookMapper::mapToDTO).toList();
     }
 
     void deleteByTitleAuthorAvailable(String title, String author, boolean available) {
-        try {
-            BookDAO bookDAO = new BookDAO(dbConnector.getConnection());
-            bookDAO.deleteByTitleAuthorAvailable(title, author, available);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException();
-        }
+        bookDAOCreator.getReaderDAO().deleteByTitleAuthorAvailable(title, author, available);
     }
 
     void deleteByTitle(String title) {
-        BookDAO bookDAO = null;
-        try {
-            bookDAO = new BookDAO(dbConnector.getConnection());
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        if (bookDAO != null) {
-            bookDAO.deleteByTitle(title);
-        }
+        bookDAOCreator.getReaderDAO().deleteByTitle(title);
     }
 
     void deleteAllBooks() {
-        BookDAO bookDAO = null;
-        try {
-            bookDAO = new BookDAO(dbConnector.getConnection());
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        if (bookDAO != null) {
-            bookDAO.deleteAllBooks();
-        }
+        bookDAOCreator.getReaderDAO().deleteAllBooks();
     }
+
     List<BookDTO> findAll() {
-        try {
-            BookDAO bookDAO = new BookDAO(dbConnector.getConnection());
-            return bookDAO.findAll().stream().map(BookMapper::mapToDTO).collect(Collectors.toList());
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException();
-        }
+        return bookDAOCreator.getReaderDAO().findAll().stream().map(BookMapper::mapToDTO).toList();
     }
 }
