@@ -41,7 +41,7 @@ public class BookRepository {
             System.err.println(e.getMessage());
             throw new RuntimeException(e);
         }
-        return BookMapperToDTO.mapToDTO(bookDAO.findById(id));
+        return BookMapper.mapToDTO(bookDAO.findById(id));
     }
 
     BookDTO create(String title, String author) {
@@ -58,7 +58,7 @@ public class BookRepository {
             System.err.println(e.getMessage());
             throw new RuntimeException();
         }
-        return BookMapperToDTO.mapToDTO(bookDAO.create(book));
+        return BookMapper.mapToDTO(bookDAO.create(book));
     }
 
     void deleteById(long id) {
@@ -83,9 +83,9 @@ public class BookRepository {
             System.err.println(e.getMessage());
         }
         if (bookDAO != null) {
-            Book book = BookMapperToDTO.mapToBook(bookDTO);
+            Book book = BookMapper.mapToBook(bookDTO);
             Book update = bookDAO.update(book);
-            updatedBook = BookMapperToDTO.mapToDTO(update);
+            updatedBook = BookMapper.mapToDTO(update);
         }
         return updatedBook;
     }
@@ -93,7 +93,7 @@ public class BookRepository {
     List<BookDTO> findBooksByTitle(String bookTitle) {
         try {
             BookDAO bookDAO = new BookDAO(dbConnector.getConnection());
-            return bookDAO.findByTitle(bookTitle).stream().map(BookMapperToDTO::mapToDTO).collect(Collectors.toList());
+            return bookDAO.findByTitle(bookTitle).stream().map(BookMapper::mapToDTO).collect(Collectors.toList());
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException();
@@ -104,7 +104,7 @@ public class BookRepository {
     List<BookDTO> findBooksByDate(String startDate, String endDate){
         try {
             BookDAO bookDAO = new BookDAO(dbConnector.getConnection());
-            return bookDAO.findByDate(startDate, endDate).stream().map(BookMapperToDTO::mapToDTO).collect(Collectors.toList());
+            return bookDAO.findByDate(startDate, endDate).stream().map(BookMapper::mapToDTO).collect(Collectors.toList());
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException();

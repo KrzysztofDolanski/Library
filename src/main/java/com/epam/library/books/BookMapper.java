@@ -1,6 +1,6 @@
 package com.epam.library.books;
 
-public class BookMapperToDTO {
+public class BookMapper {
     public static BookDTO mapToDTO(Book book) {
         BookDTO bookDTO = new BookDTO();
         bookDTO.setId(book.getId());
