@@ -3,23 +3,16 @@ package com.epam.library.books;
 import com.epam.library.database.DataTransferObject;
 import com.epam.library.readers.Reader;
 
-import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-@Table(name = "BOOKS")
 public class Book implements DataTransferObject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
     private String author;
     private boolean available;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Reader reader;
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Date date;
+    private Date rent_date;
 
     public void setId(Long id) {
         this.id = id;
@@ -62,12 +55,12 @@ public class Book implements DataTransferObject {
         return reader;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getRent_date() {
+        return rent_date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setRent_date(Date rent_date) {
+        this.rent_date = rent_date;
     }
 
     public static final class Builder {
@@ -118,7 +111,7 @@ public class Book implements DataTransferObject {
             book.author = this.author;
             book.available = this.available;
             book.reader = this.reader;
-            book.date = this.date;
+            book.rent_date = this.date;
             return book;
         }
     }

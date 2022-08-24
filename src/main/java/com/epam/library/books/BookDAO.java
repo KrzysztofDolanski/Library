@@ -16,31 +16,31 @@ public class BookDAO extends DataAccessObject<Book> {
 
     private static final String BOOK_LAST_ID = " books ORDER BY id DESC LIMIT 1";
 
-    private static final String SAVE_BOOK = "INSERT INTO books(id, title, author, available, date) " +
+    private static final String SAVE_BOOK = "INSERT INTO books(id, title, author, available, rent_date) " +
             "VALUES (?, ?, ?, ?, ?)";
 
     private static final String REMOVE_BY_ID = "DELETE FROM books b WHERE b.id=?";
     private static final String REMOVE_BY_TITLE = "DELETE FROM books b WHERE b.title=?";
 
     private static final String UPDATE_BOOK = "UPDATE books " +
-            "SET id = ?, title = ?, author = ?, available = ?, reader_id=r.id, date = ? " +
+            "SET id = ?, title = ?, author = ?, available = ?, reader_id=r.id, rent_date = CURRENT_DATE " +
             "FROM books AS b " +
             "RIGHT JOIN readers AS r ON b.reader_id=r.id " +
             "WHERE books.id = ?";
 
-    private static final String FIND_BY_ID = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.date " +
+    private static final String FIND_BY_ID = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date " +
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id " +
             "WHERE b.id=?";
-    private static final String FIND_ALL_BY_TITLE = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.date " +
+    private static final String FIND_ALL_BY_TITLE = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date " +
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id " +
             "WHERE b.title=?";
 
-    private static final String FIND_ALL_BY_DATE = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.date " +
+    private static final String FIND_ALL_BY_DATE = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date " +
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id " +
-            "WHERE date BETWEEN ? AND ?";
+            "WHERE rent_date BETWEEN ? AND ?";
     private static final String REMOVE_BY_TITLE_AUTHOR_AVAILABILITY = "DELETE FROM books " +
             "WHERE id IN ( " +
             "SELECT id FROM " +
@@ -70,7 +70,7 @@ public class BookDAO extends DataAccessObject<Book> {
                     reader.setName(resultSet.getString(6));
                     reader.setSurname(resultSet.getString(7));
                     reader.setEmail(resultSet.getString(8));
-                    book.setDate(resultSet.getDate(9));
+                    book.setRent_date(resultSet.getDate(9));
                     book.setReader(reader);
                 }
             }
@@ -93,7 +93,6 @@ public class BookDAO extends DataAccessObject<Book> {
             statement.setString(3, dto.getAuthor());
             statement.setBoolean(4, dto.isAvailable());
             statement.setLong(5, dto.getId());
-            statement.setDate(6, java.sql.Date.valueOf(LocalDate.now()));
             statement.execute();
             return this.findById(dto.getId());
         } catch (SQLException e) {
@@ -186,7 +185,7 @@ public class BookDAO extends DataAccessObject<Book> {
                     reader.setEmail(resultSet.getString(8));
                 }
                 book.setReader(reader);
-                book.setDate(resultSet.getDate(9));
+                book.setRent_date(resultSet.getDate(9));
                 books.add(book);
             }
         } catch (SQLException e) {

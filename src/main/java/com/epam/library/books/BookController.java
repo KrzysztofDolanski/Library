@@ -17,7 +17,6 @@ public class BookController {
         this.bookService = bookService;
     }
 
-
     @GetMapping("{bookId}")
     public BookDTO findById(@PathVariable Long bookId) {
         return bookService.findById(bookId);
@@ -48,7 +47,7 @@ public class BookController {
 
 
     @PutMapping("")
-    public String borrowBook(@RequestParam long readerId,
+    public BookDTO borrowBook(@RequestParam long readerId,
                              @RequestParam String readerName,
                              @RequestParam String readerSurname,
                              @RequestParam String title){

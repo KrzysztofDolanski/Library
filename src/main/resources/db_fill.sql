@@ -1,5 +1,11 @@
 SET TIME ZONE 'UTC';
+
+create database library_db;
+
 \c library_db;
+
+CREATE TABLE IF NOT EXISTS readers(id SERIAL PRIMARY KEY, name VARCHAR(250), surname VARCHAR(250), email VARCHAR(200));
+CREATE TABLE IF NOT EXISTS books(id SERIAL, title VARCHAR(250), author VARCHAR(250), available BOOLEAN, reader_id INTEGER, rent_date DATE NOT NULL DEFAULT CURRENT_DATE, PRIMARY KEY (id), CONSTRAINT fk_reader FOREIGN KEY (reader_id) REFERENCES readers(id));
 
 
 CREATE FUNCTION reader_check_name_function()
@@ -9,11 +15,11 @@ BEGIN
 IF (NEW.r.name REGEXP '^[A-Za-z]\\w{5, 29}$' = 0) SET RAISE INFO 'Readers name should have only letters.'
 END;
 
-
 CREATE TRIGGER reader_check_name
     BEFORE INSERT
     ON readers FOR EACH ROW
     EXECUTE PROCEDURE reader_check_name_function;
+
 
 INSERT INTO BOOKS (id, author, title, available)
 VALUES (1, 'Nela ', '10 NIESAMOWITYCH PRZYGÓD NELI', true),

@@ -45,26 +45,28 @@ public class BookService {
         bookRepository.deleteById(bookId);
     }
 
-    String borrow(Long readerId, String readerName, String readerSurname, String bookTitle) {
-        Reader borrower;
-        BookDTO bookDTO;
+    BookDTO borrow(Long readerId, String readerName, String readerSurname, String bookTitle) {
+        Reader borrower = null;
+        BookDTO bookDTO = null;
         if (readerId != null) {
             borrower = readerRepository.findById(readerId);
         } else {
-            return "You must provide id.";
+            System.err.println("You must provide id.");
         }
-        if (borrower.getName().equals(readerName) && borrower.getSurname().equals(readerSurname)) {
-            bookDTO = bookRepository.findBooksByTitle(bookTitle).stream().filter(BookDTO::isAvailable).findAny().orElseThrow();
-            if (bookDTO.isAvailable()) {
-                bookDTO.setReader(borrower);
-                bookDTO.setAvailable(false);
-                bookRepository.update(bookDTO);
+        if (borrower != null) {
+            if (borrower.getName().equals(readerName) && borrower.getSurname().equals(readerSurname)) {
+                bookDTO = bookRepository.findBooksByTitle(bookTitle).stream().filter(BookDTO::isAvailable).findAny().orElseThrow();
+                if (bookDTO.isAvailable()) {
+                    bookDTO.setReader(borrower);
+                    bookDTO.setAvailable(false);
+                    bookRepository.update(bookDTO);
+                }
+            } else {
+                System.err.println("Readers values mismatch.");
             }
-        } else {
-            return "Readers values mismatch.";
         }
 
-        return "Book " + bookDTO.getTitle() + " successful rent";
+        return bookDTO;
     }
 
     void deleteByTitleAuthorAndAvailability(String title, String author, boolean available) {

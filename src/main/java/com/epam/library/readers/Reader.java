@@ -7,21 +7,14 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
-@Entity
-@Table(name = "READERS")
 public class Reader implements DataTransferObject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String surname;
     private String email;
 
-    @OneToMany(mappedBy = "reader", fetch = FetchType.EAGER)
     List<Book> books;
-
-
     @Override
     public Long getId() {
         return id;

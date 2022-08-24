@@ -76,7 +76,7 @@
                 <executions>
                     <execution><!-- Run our version calculation script -->
                         <id>Renaming build artifacts</id>
-                        <phase>verify</phase>
+                        <phase>compile</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
