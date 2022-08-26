@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS books
 CREATE OR REPLACE FUNCTION check_name() RETURNS TRIGGER LANGUAGE plpgsql
 AS $$
 BEGIN
-IF
-REGEXP_MATCHES(NEW.name,'^[A-Za-z]\\w{5, 29}$') THEN RAISE EXCEPTION 'Readers name should have only letters.';
+IF REGEXP_MATCHES
+(NEW.name, '^[\w''\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$') THEN RAISE EXCEPTION 'Readers name should have only letters.';
 END IF;
 RETURN NEW;
 END;
