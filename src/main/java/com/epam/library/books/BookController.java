@@ -1,7 +1,9 @@
 package com.epam.library.books;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +20,12 @@ public class BookController {
     }
 
     @RequestMapping(value = "", params = "bookId", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public BookDTO findById(@RequestParam("bookId") Long bookId) {
-        return bookService.findById(bookId);
+    public ResponseEntity<BookDTO> findById(@RequestParam("bookId") Long bookId) {
+        BookDTO byId = bookService.findById(bookId);
+        if (byId.getId()==null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(byId, HttpStatus.OK);
     }
 
     @RequestMapping(value = "", params = "title", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

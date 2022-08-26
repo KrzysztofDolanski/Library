@@ -2,7 +2,8 @@
 package com.epam.library.books;
 
 import com.epam.library.database.DatabaseConnectionManager;
-import com.epam.library.readers.ReaderDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -11,7 +12,6 @@ import java.util.Properties;
 
 @Component
 public class BookDAOCreator {
-
     private final DatabaseConnectionManager dbConnector;
 
     public BookDAOCreator() {
