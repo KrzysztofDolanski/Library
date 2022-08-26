@@ -1,58 +1,50 @@
-SET TIME ZONE 'UTC';
 
-create
-database library_db;
-
-\c
-library_db;
 
 CREATE TABLE IF NOT EXISTS readers
 (
     id
-    SERIAL
-    PRIMARY
-    KEY,
+            SERIAL
+        PRIMARY
+            KEY,
     name
-    VARCHAR
-(
-    250
-), surname VARCHAR
-(
-    250
-), email VARCHAR
-(
-    200
-));
+            VARCHAR(250),
+    surname VARCHAR(250),
+    email   VARCHAR(200)
+);
 CREATE TABLE IF NOT EXISTS books
 (
     id
-    SERIAL,
+              SERIAL,
     title
-    VARCHAR
-(
-    250
-), author VARCHAR
-(
-    250
-), available BOOLEAN, reader_id INTEGER, rent_date DATE NOT NULL DEFAULT CURRENT_DATE, PRIMARY KEY
-(
-    id
-), CONSTRAINT fk_reader FOREIGN KEY
-(
-    reader_id
-) REFERENCES readers
-(
-    id
-));
+              VARCHAR(250),
+    author    VARCHAR(250),
+    available BOOLEAN,
+    reader_id INTEGER,
+    rent_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    PRIMARY KEY
+        (
+         id
+            ),
+    CONSTRAINT fk_reader FOREIGN KEY
+        (
+         reader_id
+            ) REFERENCES readers
+            (
+             id
+                )
+);
 
 
-CREATE OR REPLACE FUNCTION check_name() RETURNS TRIGGER LANGUAGE plpgsql
-AS $$
+CREATE OR REPLACE FUNCTION check_name() RETURNS TRIGGER
+    LANGUAGE plpgsql
+AS
+$$
 BEGIN
-IF REGEXP_MATCHES
-(NEW.name, '^[\w''\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$') THEN RAISE EXCEPTION 'Readers name should have only letters.';
-END IF;
-RETURN NEW;
+    IF REGEXP_MATCHES
+        (NEW.name, '[1-9]') THEN
+        RAISE EXCEPTION 'Readers name should have only letters.';
+    END IF;
+    RETURN NEW;
 END;
 $$;
 
@@ -60,7 +52,8 @@ CREATE TRIGGER reader_check_name
     BEFORE INSERT
     ON readers
     FOR EACH ROW
-    EXECUTE PROCEDURE check_name();
+EXECUTE PROCEDURE check_name();
+
 
 
 INSERT INTO BOOKS (id, author, title, available)
