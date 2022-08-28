@@ -3,6 +3,7 @@ package com.epam.library.readers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.servlet.http.Cookie;
 import java.util.List;
 
 @Repository
@@ -40,8 +41,9 @@ public class ReaderRepository {
         return readerDAOCreator.getReaderDAO().update(reader);
     }
 
-    public List<Reader> findByNameAndSurname(String readerName, String readerSurname) {
+    List<Reader> findByNameAndSurname(String readerName, String readerSurname) {
         return readerDAOCreator.getReaderDAO().findByNameAndSurname(readerName, readerSurname);
     }
+
 }
 

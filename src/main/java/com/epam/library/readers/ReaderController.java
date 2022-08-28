@@ -1,12 +1,14 @@
 package com.epam.library.readers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/readers")
@@ -14,19 +16,24 @@ public class ReaderController {
 
 
     private final ReaderService readerService;
+    private final ReaderCookie readerCookie;
 
     @Autowired
-    public ReaderController(ReaderService readerService) {
+    public ReaderController(ReaderService readerService, ReaderCookie readerCookie) {
         this.readerService = readerService;
+        this.readerCookie = readerCookie;
     }
 
     @PostMapping("")
     public ResponseEntity<Reader> create(@RequestBody Reader reader) {
         Reader createdReader = readerService.create(reader);
         if (createdReader==null){
-            return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            return ResponseEntity
+                    .status(HttpStatus.NOT_IMPLEMENTED)
+                    .header(HttpHeaders.SET_COOKIE, readerCookie.responseCookie.toString())
+                    .build();
         }
-        return new ResponseEntity<>(createdReader, HttpStatus.CREATED);
+        return ResponseEntity.ok(createdReader);
     }
 
 

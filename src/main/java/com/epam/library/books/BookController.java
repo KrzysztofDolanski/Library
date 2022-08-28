@@ -1,5 +1,6 @@
 package com.epam.library.books;
 
+import org.apache.tomcat.util.http.parser.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -78,7 +79,7 @@ public class BookController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("")
+    @PutMapping(value = "")
     public ResponseEntity<BookDTO> borrowBook(@RequestParam long readerId,
                                               @RequestParam String readerName,
                                               @RequestParam String readerSurname,
