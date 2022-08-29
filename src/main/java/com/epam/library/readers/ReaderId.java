@@ -9,6 +9,7 @@ import java.util.random.RandomGenerator;
 @Component
 public class ReaderId {
 
+    //todo implement security authentication token
     static Set<Long> id = new HashSet<>();
 
     static Long createReaderCookieId(){

@@ -8,8 +8,7 @@ public class ReaderCookie {
 
     ResponseCookie responseCookie = ResponseCookie.from("user-id", String.valueOf(ReaderId.createReaderCookieId()))
             .httpOnly(true)
-            .path("/readers")
+            .path("/")
             .maxAge(8000)
-            .domain("localhost:8082")
             .build();
 }
