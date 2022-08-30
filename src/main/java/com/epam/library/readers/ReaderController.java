@@ -12,6 +12,7 @@ import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @RestController
 @RequestMapping("/readers")
+@CrossOrigin("*")
 public class ReaderController {
 
 
@@ -24,9 +25,11 @@ public class ReaderController {
         this.readerCookie = readerCookie;
     }
 
-    @PostMapping("")
-    public ResponseEntity<Reader> create(@RequestBody Reader reader) {
-        Reader createdReader = readerService.create(reader);
+    @PostMapping(value = "", params = {"name", "surname", "email"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Reader> create(@RequestParam("name") String name,
+                                         @RequestParam("surname") String surname,
+                                         @RequestParam("email") String email ) {
+        Reader createdReader = readerService.create(name, surname, email);
         if (createdReader == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_IMPLEMENTED)

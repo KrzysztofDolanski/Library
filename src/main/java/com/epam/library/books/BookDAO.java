@@ -8,8 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BookDAO extends DataAccessObject<Book> {
 
@@ -50,8 +50,10 @@ public class BookDAO extends DataAccessObject<Book> {
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id ";
 
+    private final BookByNameThenAuthorComparator bookByNameThenAuthorComparator;
     BookDAO(Connection connection) {
         super(connection);
+        bookByNameThenAuthorComparator = new BookByNameThenAuthorComparator();
     }
 
     @Override
@@ -108,7 +110,7 @@ public class BookDAO extends DataAccessObject<Book> {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-        return books;
+        return books.stream().sorted(bookByNameThenAuthorComparator).toList();
     }
 
     @Override
