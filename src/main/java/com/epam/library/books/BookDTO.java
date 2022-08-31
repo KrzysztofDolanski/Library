@@ -2,7 +2,6 @@ package com.epam.library.books;
 
 import com.epam.library.readers.Reader;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class BookDTO {
