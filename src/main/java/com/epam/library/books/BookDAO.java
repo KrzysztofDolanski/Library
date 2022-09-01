@@ -49,6 +49,7 @@ public class BookDAO extends DataAccessObject<Book> {
     private static final String FIND_ALL_BOOKS = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date " +
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id ";
+    private static final String FIND_ALL_AUTHORS_BY_TITLE = "SELECT b.author FROM books b WHERE b.title=?";
 
     private final BookByNameThenAuthorComparator bookByNameThenAuthorComparator;
     BookDAO(Connection connection) {
@@ -249,5 +250,19 @@ public class BookDAO extends DataAccessObject<Book> {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public List<String> getAuthorsByTitle(String title) {
+        List<String> authors = new ArrayList<>();
+        try (PreparedStatement statement = this.connection.prepareStatement(FIND_ALL_AUTHORS_BY_TITLE)) {
+            statement.setString(1, title);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                authors.add(resultSet.getString(1));
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return authors;
     }
 }

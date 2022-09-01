@@ -1,6 +1,8 @@
 package com.epam.library.books;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +23,14 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @RequestMapping(value = "", params = "bookId", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(value = "author")
+    @GetMapping(value = "", params="title", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getAuthor(@RequestParam("title") String title){
+        return bookService.getAuthorByTitle(title);
+    }
+
+
+    @GetMapping(value = "", params = "bookId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookDTO> findById(@RequestParam("bookId") Long bookId) {
         BookDTO byId = bookService.findById(bookId);
         if (byId.getId() == null) {
@@ -29,16 +38,16 @@ public class BookController {
         }
         return new ResponseEntity<>(byId, HttpStatus.OK);
     }
-
-    @RequestMapping(value = "", params = "title", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<BookDTO>> findByTitle(@RequestParam("title") String title) {
-
-        List<BookDTO> byTitle = bookService.findByTitle(title);
-        if (byTitle.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(byTitle, HttpStatus.OK);
-    }
+//
+//    @GetMapping(value = "", params = "title", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<List<BookDTO>> findByTitle(@RequestParam("title") String title) {
+//
+//        List<BookDTO> byTitle = bookService.findByTitle(title);
+//        if (byTitle.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(byTitle, HttpStatus.OK);
+//    }
 
     @GetMapping("")
     public ResponseEntity<List<BookDTO>> findAllBooks(Model model) {
@@ -51,7 +60,7 @@ public class BookController {
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "", params = {"startDate", "endDate"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", params = {"startDate", "endDate"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<BookDTO>> findByDate(@RequestParam("startDate") String startDate,
                                                     @RequestParam("endDate") String endDate) {
         List<BookDTO> byDate = bookService.findByDate(startDate, endDate);

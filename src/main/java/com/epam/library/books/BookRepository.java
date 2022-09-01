@@ -58,4 +58,8 @@ public class BookRepository {
     List<BookDTO> findAll() {
         return bookDAOCreator.getReaderDAO().findAll().stream().map(BookMapper::mapToDTO).toList();
     }
+
+    public String getAuthorByTitle(String title) {
+        return bookDAOCreator.getReaderDAO().getAuthorsByTitle(title).get(0);
+    }
 }

@@ -81,7 +81,11 @@ public class BookService {
         bookRepository.deleteAllBooks();
     }
 
-    public List<BookDTO> findAll() {
+    List<BookDTO> findAll() {
         return bookRepository.findAll();
+    }
+
+    String getAuthorByTitle(String title) {
+        return bookRepository.getAuthorByTitle(title);
     }
 }
