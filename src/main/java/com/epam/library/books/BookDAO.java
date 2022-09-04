@@ -76,6 +76,7 @@ public class BookDAO extends DataAccessObject<Book> {
                     reader.setName(resultSet.getString(6));
                     reader.setSurname(resultSet.getString(7));
                     reader.setEmail(resultSet.getString(8));
+
                     book.setRent_date(resultSet.getDate(9));
                     book.setReader(reader);
                 }

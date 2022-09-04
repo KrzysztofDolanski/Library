@@ -3,7 +3,6 @@ package com.epam.library.readers;
 import com.epam.library.books.Book;
 import com.epam.library.database.DataTransferObject;
 
-import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
