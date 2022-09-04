@@ -17,14 +17,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-@Slf4j(topic = "GLOBAL_EXCEPTION_HANDLER")
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         public static final String TRACE = "trace";
-
-        @Value("${reflectoring.trace:false}")
-        private boolean printStackTrace;
 
         @Override
         @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -42,14 +38,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         @ExceptionHandler(NoSuchElementException.class)
         @ResponseStatus(HttpStatus.NOT_FOUND)
         public ResponseEntity<Object> handleNoSuchElementFoundException(NoSuchElementException itemNotFoundException, WebRequest request) {
-            log.error("Failed to find the requested element", itemNotFoundException);
             return buildErrorResponse(itemNotFoundException, HttpStatus.NOT_FOUND, request);
         }
 
         @ExceptionHandler(Exception.class)
         @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
         public ResponseEntity<Object> handleAllUncaughtException(Exception exception, WebRequest request) {
-            log.error("Unknown error occurred", exception);
             return buildErrorResponse(exception, "Unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
 
@@ -64,9 +58,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus httpStatus,
                 WebRequest request) {
             ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), message);
-            if (printStackTrace && isTraceOn(request)) {
-                errorResponse.setStackTrace(ExceptionUtils.getStackTrace(exception));
-            }
             return ResponseEntity.status(httpStatus).body(errorResponse);
         }
 

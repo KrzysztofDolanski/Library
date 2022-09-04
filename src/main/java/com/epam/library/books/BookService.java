@@ -37,8 +37,8 @@ public class BookService {
         return bookRepository.findBooksByDate(startDate, endDate);
     }
 
-    BookDTO save(String title, String author) {
-        return bookRepository.create(title, author);
+    BookDTO save(BookDTO bookDTO) {
+        return bookRepository.create(bookDTO);
     }
 
     void delete(Long bookId) {

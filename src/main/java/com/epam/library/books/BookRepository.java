@@ -3,6 +3,7 @@ package com.epam.library.books;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -20,8 +21,13 @@ public class BookRepository {
         return BookMapper.mapToDTO(bookDAOCreator.getReaderDAO().findById(id));
     }
 
-    BookDTO create(String title, String author) {
-        Book book = new Book.Builder().title(title).author(author).build();
+    BookDTO create(BookDTO bookDTO) {
+        Book book = new Book.Builder()
+                .title(bookDTO.getTitle())
+                .author(bookDTO.getAuthor())
+                .available(bookDTO.isAvailable())
+                .reader(bookDTO.getReader())
+                .build();
         return BookMapper.mapToDTO(bookDAOCreator.getReaderDAO().create(book));
     }
 

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -90,9 +91,8 @@ public class BookController {
     }
 
     @PostMapping("")
-    public ResponseEntity<BookDTO> save(@RequestParam String title,
-                                        @RequestParam String author) {
-        BookDTO book = bookService.save(title, author);
+    public ResponseEntity<BookDTO> save(@RequestBody @Validated BookDTO bookDTO) {
+        BookDTO book = bookService.save(bookDTO);
         if (book == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_IMPLEMENTED)
