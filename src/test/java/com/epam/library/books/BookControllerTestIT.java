@@ -2,15 +2,13 @@ package com.epam.library.books;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -20,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 class BookControllerTestIT {
 
-    @Autowired
+    @Mock
     CacheManager cacheManager;
 
     BookDAO bookDAO;
@@ -54,15 +52,15 @@ class BookControllerTestIT {
     }
 
     @Test
-    void shouldFindBookInCache(){
+    void shouldFindBookInCache() {
         //given
         String title = "Gold";
         String byTitle = bookDAO.getAuthorsByTitle(title).stream().findFirst().orElseThrow();
 
         String cachedBook = "";
         //when
-        if(getCachedBook(title).isPresent()){
-        cachedBook += getCachedBook(title).orElseThrow();
+        if (getCachedBook(title).isPresent()) {
+            cachedBook += getCachedBook(title).orElseThrow();
         }
         //then
         assertEquals(byTitle, cachedBook);

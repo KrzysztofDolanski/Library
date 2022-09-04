@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,11 +26,9 @@ public class ReaderController {
         this.readerCookie = readerCookie;
     }
 
-    @PostMapping(value = "", params = {"name", "surname", "email"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Reader> create(@RequestParam("name") String name,
-                                         @RequestParam("surname") String surname,
-                                         @RequestParam("email") String email ) {
-        Reader createdReader = readerService.create(name, surname, email);
+    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Reader> create(@RequestBody @Validated Reader reader) {
+        Reader createdReader = readerService.create(reader);
         if (createdReader == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_IMPLEMENTED)

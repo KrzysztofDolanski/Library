@@ -16,8 +16,8 @@ public class ReaderService {
         this.readerRepository = readerRepository;
     }
 
-    Reader create(String name, String surname, String email) {
-        return readerRepository.create(name, surname, email);
+    Reader create(Reader reader) {
+        return readerRepository.create(reader);
     }
 
     Reader findById(long id) {

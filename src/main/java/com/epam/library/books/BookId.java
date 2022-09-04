@@ -1,4 +1,4 @@
-package com.epam.library.readers;
+package com.epam.library.books;
 
 import org.springframework.stereotype.Component;
 
@@ -7,18 +7,17 @@ import java.util.Set;
 import java.util.random.RandomGenerator;
 
 @Component
-class ReaderId {
+class BookId {
 
-    //todo implement security authentication token
     static Set<Long> id = new HashSet<>();
 
-    static Long createReaderCookieId(){
+    static Long createBookCookieId(){
         RandomGenerator aDefault = RandomGenerator.getDefault();
         long randomLong = aDefault.nextLong();
         if (!id.contains(randomLong)){
             id.add(randomLong);
             return randomLong;
         }
-        return createReaderCookieId();
+        return createBookCookieId();
     }
 }

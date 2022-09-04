@@ -21,11 +21,8 @@ public class ReaderRepository {
         return readerDAOCreator.getReaderDAO().findById(id);
     }
 
-    Reader create(String name, String surname, String email) {
-        Reader reader = new Reader();
-        reader.setName(name);
-        reader.setSurname(surname);
-        reader.setEmail(email);
+    Reader create(Reader reader) {
+
         return readerDAOCreator.getReaderDAO().create(reader);
     }
 

@@ -1,8 +1,6 @@
 package com.epam.library.books;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
+
 @RestController
 @RequestMapping("/books")
 @CrossOrigin("*")
@@ -18,46 +18,59 @@ public class BookController {
 
     private final BookService bookService;
 
+    private final BookCookie bookCookie;
+
     @Autowired
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, BookCookie bookCookie) {
         this.bookService = bookService;
+        this.bookCookie = bookCookie;
     }
-
-    @CacheEvict(value = "author")
-    @GetMapping(value = "", params="title", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getAuthor(@RequestParam("title") String title){
-        return bookService.getAuthorByTitle(title);
-    }
-
 
     @GetMapping(value = "", params = "bookId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookDTO> findById(@RequestParam("bookId") Long bookId) {
         BookDTO byId = bookService.findById(bookId);
         if (byId.getId() == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                    .build();
         }
-        return new ResponseEntity<>(byId, HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                .body(byId);
     }
-//
-//    @GetMapping(value = "", params = "title", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<List<BookDTO>> findByTitle(@RequestParam("title") String title) {
-//
-//        List<BookDTO> byTitle = bookService.findByTitle(title);
-//        if (byTitle.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        return new ResponseEntity<>(byTitle, HttpStatus.OK);
-//    }
+
+    @GetMapping(value = "", params = "title", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BookDTO>> findByTitle(@RequestParam("title") String title) {
+
+        List<BookDTO> byTitle = bookService.findByTitle(title);
+        if (byTitle.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                    .build();
+        }
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                .body(byTitle);
+    }
 
     @GetMapping("")
     public ResponseEntity<List<BookDTO>> findAllBooks(Model model) {
-
         List<BookDTO> all = bookService.findAll();
         if (all.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                    .build();
         }
         model.addAttribute("books", all);
-        return new ResponseEntity<>(all, HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                .body(all);
     }
 
     @GetMapping(value = "", params = {"startDate", "endDate"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -65,29 +78,46 @@ public class BookController {
                                                     @RequestParam("endDate") String endDate) {
         List<BookDTO> byDate = bookService.findByDate(startDate, endDate);
         if (byDate.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                    .build();
         }
-        return new ResponseEntity<>(byDate, HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                .body(byDate);
     }
 
     @PostMapping("")
     public ResponseEntity<BookDTO> save(@RequestParam String title,
                                         @RequestParam String author) {
-
         BookDTO book = bookService.save(title, author);
         if (book == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            return ResponseEntity
+                    .status(HttpStatus.NOT_IMPLEMENTED)
+                    .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                    .build();
         }
-        return new ResponseEntity<>(book, HttpStatus.CREATED);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                .body(book);
     }
 
     @DeleteMapping(value = "", params = "bookId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteById(@RequestParam("bookId") Long bookId) {
         bookService.delete(bookId);
         if (bookService.findById(bookId) != null) {
-            return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            return ResponseEntity
+                    .status(HttpStatus.NOT_IMPLEMENTED)
+                    .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                    .build();
         }
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                .build();
     }
 
     @PutMapping(value = "")
@@ -97,8 +127,15 @@ public class BookController {
                                               @RequestParam String title) {
         BookDTO book = bookService.borrow(readerId, readerName, readerSurname, title);
         if (book == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            return ResponseEntity
+                    .status(HttpStatus.NOT_IMPLEMENTED)
+                    .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                    .build();
         }
-        return new ResponseEntity<>(book, HttpStatus.ACCEPTED);
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                .build();
     }
+
 }
