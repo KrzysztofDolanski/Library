@@ -28,7 +28,7 @@ public class ReaderDAO extends DataAccessObject<Reader> {
             "SET id = ?, name = ?, surname = ?, email = ? " +
             "WHERE id = ?";
     ;
-    private static final String FIND_ALL_BY_NAME_AND_SURNAME = "SELECT r.id, r.name, r.surname, r.email, b.id, b.title, b.author, b.available, b.rent_date" +
+    private static final String FIND_ALL_BY_NAME_AND_SURNAME = "SELECT r.id, r.name, r.surname, r.email, b.id, b.title, b.author, b.available, b.rent_date " +
             "FROM readers r " +
             "LEFT JOIN books b on r.id=b.reader_id " +
             "WHERE r.name=? AND r.surname=?";
@@ -158,7 +158,7 @@ public class ReaderDAO extends DataAccessObject<Reader> {
 
         try (PreparedStatement statement = this.connection.prepareStatement(FIND_ALL_BY_NAME_AND_SURNAME)) {
             statement.setString(1, readerName);
-            statement.setString(1, readerSurname);
+            statement.setString(2, readerSurname);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {

@@ -135,7 +135,7 @@ public class BookController {
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
                 .header(SET_COOKIE, bookCookie.responseCookie.toString())
-                .build();
+                .body(book);
     }
 
 }
