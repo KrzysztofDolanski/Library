@@ -18,18 +18,19 @@ import static org.springframework.http.HttpHeaders.SET_COOKIE;
 public class BookController {
 
     private final BookService bookService;
-
     private final BookCookie bookCookie;
+    private final BookCacheImpl bookCache;
 
     @Autowired
-    public BookController(BookService bookService, BookCookie bookCookie) {
+    public BookController(BookService bookService, BookCookie bookCookie, BookCacheImpl bookCache) {
         this.bookService = bookService;
         this.bookCookie = bookCookie;
+        this.bookCache = bookCache;
     }
 
     @GetMapping(value = "", params = "bookId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookDTO> findById(@RequestParam("bookId") Long bookId) {
-        BookDTO byId = bookService.findById(bookId);
+        BookDTO byId = bookCache.load(bookId);
         if (byId.getId() == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)

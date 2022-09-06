@@ -1,10 +1,11 @@
 package com.epam.library.books;
 
+import com.epam.library.cache.DTO;
 import com.epam.library.readers.Reader;
 
 import java.util.Date;
 
-public class BookDTO {
+public class BookDTO extends DTO {
 
     private Long id;
     private String title;
@@ -85,4 +86,5 @@ public class BookDTO {
                 ", zone=" + date +
                 '}';
     }
+
 }
