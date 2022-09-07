@@ -1,8 +1,5 @@
 package com.epam.library.books;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,12 +13,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class BookCacheImplTest {
 
     @MockBean
-    private BookService bookService;
+    BookService bookService;
     @MockBean
     BookCookie bookCookie;
     @MockBean
     BookCacheImpl bookCache;
 
+    @Test
     void timeToFindBookShouldBeFasterAtSecondSearch() throws Exception {
         //given
         //when

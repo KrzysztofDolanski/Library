@@ -16,6 +16,9 @@ public class ReaderDAO extends DataAccessObject<Reader> {
             "LEFT JOIN books b on r.id=b.reader_id " +
             "WHERE r.id=?";
 
+    private static final String FIND_READERS_BOOKS = "SELECT b.title FROM readers r " +
+            "LEFT JOIN books b on r.id=b.reader_id " +
+            "WHERE r.id=?";
     private static final String SAVE_READER = "INSERT INTO readers(id, name, surname, email) " +
             "VALUES (?, ?, ?, ?)";
 
@@ -81,7 +84,6 @@ public class ReaderDAO extends DataAccessObject<Reader> {
                 reader.setName(resultSet.getString(2));
                 reader.setSurname(resultSet.getString(3));
                 reader.setEmail(resultSet.getString(4));
-
                 book.setId(resultSet.getLong(5));
                 book.setTitle(resultSet.getString(6));
                 book.setAuthor(resultSet.getString(7));
@@ -185,4 +187,22 @@ public class ReaderDAO extends DataAccessObject<Reader> {
         }
         return readers;
     }
+
+
+    public List<String> findBooksByReaderId(long id) {
+        List<String> booksTitles = new ArrayList<>();
+        try (PreparedStatement statement = this.connection.prepareStatement(FIND_READERS_BOOKS)) {
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                booksTitles.add(resultSet.getString(1));
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return booksTitles;
+    }
+
+
 }

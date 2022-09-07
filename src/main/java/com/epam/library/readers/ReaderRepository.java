@@ -46,5 +46,8 @@ public class ReaderRepository {
         return readerDAOCreator.getReaderDAO().findByNameAndSurname(readerName, readerSurname);
     }
 
+    public List<String> findReadersBooks(long readerId) {
+        return readerDAOCreator.getReaderDAO().findBooksByReaderId(readerId);
+    }
 }
 

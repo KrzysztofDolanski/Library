@@ -4,11 +4,11 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ReaderCookie {
+public class ReaderIdCookie {
 
-    Reader reader = new Reader();
+    private Reader reader = new Reader();
 
-    ResponseCookie responseCookie = ResponseCookie
+    ResponseCookie readerIdCookie = ResponseCookie
             .from("user-id", String.valueOf(ReaderId.createReaderCookieId(reader)))
             .httpOnly(true)
             .path("/")

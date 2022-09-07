@@ -45,4 +45,7 @@ public class ReaderService {
         return readerRepository.findByNameAndSurname(readerName, readerSurname);
     }
 
+    public List<String> findReadersBooks(long readerId) {
+        return readerRepository.findReadersBooks(readerId);
+    }
 }

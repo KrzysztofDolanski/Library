@@ -1,6 +1,7 @@
 package com.epam.library.readers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
+import static org.springframework.http.HttpHeaders.*;
 
 @RestController
 @RequestMapping("/readers")
@@ -20,12 +20,14 @@ import static org.springframework.http.HttpHeaders.SET_COOKIE;
 public class ReaderController {
 
     private final ReaderService readerService;
-    private final ReaderCookie readerCookie;
+    private final ReaderIdCookie readerIdCookie;
+    private final ReaderDeleteCookie readerDeleteCookie;
 
     @Autowired
-    public ReaderController(ReaderService readerService, ReaderCookie readerCookie) {
+    public ReaderController(ReaderService readerService, ReaderIdCookie readerIdCookie, ReaderDeleteCookie readerDeleteCookie) {
         this.readerService = readerService;
-        this.readerCookie = readerCookie;
+        this.readerIdCookie = readerIdCookie;
+        this.readerDeleteCookie = readerDeleteCookie;
     }
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, "application/x-www-form-urlencoded"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,8 +36,8 @@ public class ReaderController {
         String cookie = "";
         try {
             createdReader = readerService.create(reader);
-            readerCookie.setReader(reader);
-            cookie += readerCookie.responseCookie.toString();
+            readerIdCookie.setReader(reader);
+            cookie += readerIdCookie.readerIdCookie.toString();
         } catch (ReaderNotFoundException e) {
             System.err.println(e.getMessage());
             return ResponseEntity
@@ -57,8 +59,8 @@ public class ReaderController {
         String cookie = "";
         try {
             reader = readerService.findById(readerId);
-            readerCookie.setReader(reader);
-            cookie += readerCookie.responseCookie.toString();
+            readerIdCookie.setReader(reader);
+            cookie += readerIdCookie.readerIdCookie.toString();
         } catch (ReaderNotFoundException e) {
             System.err.println(e.getMessage());
             return ResponseEntity
@@ -81,8 +83,8 @@ public class ReaderController {
         //todo: Here returning is list of Readers but cookie is produces from first Reader from the list.
         try {
             readers = new ArrayList<>(readerService.findByNameAndSurname(readerName, readerSurname));
-            readerCookie.setReader(readers.get(0));
-            cookie += readerCookie.responseCookie.toString();
+            readerIdCookie.setReader(readers.get(0));
+            cookie += readerIdCookie.readerIdCookie.toString();
         } catch (ReaderNotFoundException e) {
             System.err.println(e.getMessage());
             return ResponseEntity
@@ -99,11 +101,18 @@ public class ReaderController {
     @DeleteMapping(value = "", params = "readerId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> delete(@RequestParam("readerId") long readerId) {
         String cookie = "";
+        HttpHeaders headers = new HttpHeaders();
         try {
-            readerCookie.setReader(readerService.findById(readerId));
-            readerService.deleteById(readerId);
-            cookie += readerCookie.responseCookie.toString();
-        } catch (ReaderNotFoundException e) {
+            readerIdCookie.setReader(readerService.findById(readerId));
+
+            List<String> bookTitles = readerService.findReadersBooks(readerId);
+            if (bookTitles.isEmpty()) {
+                readerService.deleteById(readerId);
+                cookie += readerIdCookie.readerIdCookie.toString();
+            } else {
+                throw new ReadersBooksNotReturnedException();
+            }
+        } catch (ReaderNotFoundException | ReadersBooksNotReturnedException e) {
             System.err.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.NOT_IMPLEMENTED)
@@ -114,16 +123,17 @@ public class ReaderController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header(SET_COOKIE, cookie)
+                .header(SET_COOKIE2, readerDeleteCookie.readerDeleteCookie.toString())
                 .build();
     }
 
     @PutMapping("")
     public ResponseEntity<Reader> update(@RequestBody Reader reader) {
         Reader updated = readerService.update(reader);
-        readerCookie.setReader(reader);
+        readerIdCookie.setReader(reader);
         String cookie = "";
         try {
-            cookie += readerCookie.responseCookie.toString();
+            cookie += readerIdCookie.readerIdCookie.toString();
         } catch (ReaderNotFoundException e) {
             System.err.println(e.getMessage());
             return ResponseEntity
