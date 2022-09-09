@@ -44,7 +44,6 @@ public class BookRepository {
         return bookDAOCreator.getReaderDAO().findByTitle(bookTitle).stream().map(BookMapper::mapToDTO).toList();
     }
 
-
     List<BookDTO> findBooksByDate(String startDate, String endDate) {
         return bookDAOCreator.getReaderDAO().findByDate(startDate, endDate).stream().map(BookMapper::mapToDTO).toList();
     }
@@ -65,7 +64,11 @@ public class BookRepository {
         return bookDAOCreator.getReaderDAO().findAll().stream().map(BookMapper::mapToDTO).toList();
     }
 
-    public String getAuthorByTitle(String title) {
+     String getAuthorByTitle(String title) {
         return bookDAOCreator.getReaderDAO().getAuthorsByTitle(title).get(0);
+    }
+
+    List<Book> findBooksByTitleAndAuthor(String title, String author) {
+        return bookDAOCreator.getReaderDAO().findByTitleAndAuthor(title, author);
     }
 }

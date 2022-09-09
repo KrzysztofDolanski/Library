@@ -11,7 +11,7 @@ public class ReaderDAO extends DataAccessObject<Reader> {
 
     private static final String READER_LAST_ID = " readers ORDER BY id DESC LIMIT 1";
 
-    private static final String FIND_BY_ID = "SELECT r.id, r.name, r.surname, r.email, b.id " +
+    private static final String FIND_BY_ID = "SELECT r.id, r.name, r.surname, r.email, b.id, b.title, b.author, b.available " +
             "FROM readers r " +
             "LEFT JOIN books b on r.id=b.reader_id " +
             "WHERE r.id=?";
@@ -61,7 +61,6 @@ public class ReaderDAO extends DataAccessObject<Reader> {
                 book.setTitle(resultSet.getString(6));
                 book.setAuthor(resultSet.getString(7));
                 book.setAvailable(resultSet.getBoolean(8));
-                book.setReader(reader);
                 books.add(book);
             }
             reader.setBooks(books);

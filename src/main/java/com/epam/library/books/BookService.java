@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -33,7 +34,7 @@ public class BookService {
         return bookRepository.findBooksByTitle(title);
     }
 
-    List<BookDTO> findByDate(String startDate, String endDate){
+    List<BookDTO> findByDate(String startDate, String endDate) {
         return bookRepository.findBooksByDate(startDate, endDate);
     }
 
@@ -65,7 +66,6 @@ public class BookService {
                 System.err.println("Readers values mismatch.");
             }
         }
-
         return bookDTO;
     }
 
@@ -88,4 +88,9 @@ public class BookService {
     String getAuthorByTitle(String title) {
         return bookRepository.getAuthorByTitle(title);
     }
+
+    List<BookDTO> findByTitleAndAuthor(String title, String author) {
+        return bookRepository.findBooksByTitleAndAuthor(title, author).stream().map(BookMapper::mapToDTO).toList();
+    }
+
 }

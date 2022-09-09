@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
@@ -47,6 +48,22 @@ public class BookController {
     public ResponseEntity<List<BookDTO>> findByTitle(@RequestParam("title") String title) {
 
         List<BookDTO> byTitle = bookService.findByTitle(title);
+        if (byTitle.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                    .build();
+        }
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                .body(byTitle);
+    }
+
+    @GetMapping(value = "", params = {"title", "author"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BookDTO>> findByTitleAndAuthor(@RequestParam("title") String title,
+                                                              @RequestParam("author") String author) {
+        List<BookDTO> byTitle = bookService.findByTitleAndAuthor(title, author);
         if (byTitle.isEmpty()) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)

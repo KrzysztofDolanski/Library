@@ -4,6 +4,7 @@ import com.epam.library.cache.DTO;
 import com.epam.library.readers.Reader;
 
 import java.util.Date;
+import java.util.function.Predicate;
 
 public class BookDTO extends DTO {
 

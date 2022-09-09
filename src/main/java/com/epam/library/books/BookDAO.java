@@ -50,6 +50,11 @@ public class BookDAO extends DataAccessObject<Book> {
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id ";
     private static final String FIND_ALL_AUTHORS_BY_TITLE = "SELECT b.author FROM books b WHERE b.title=?";
+    private static final String FIND_ALL_BY_TITLE_AND_AUTHOR = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date " +
+            "FROM books b " +
+            "LEFT JOIN readers r on b.reader_id=r.id " +
+            "WHERE b.title=? " +
+            "AND b.author=?";;
 
     private final BookByNameThenAuthorComparator bookByNameThenAuthorComparator;
     BookDAO(Connection connection) {
@@ -168,6 +173,37 @@ public class BookDAO extends DataAccessObject<Book> {
         List<Book> books = new ArrayList<>();
         try (PreparedStatement statement = this.connection.prepareStatement(FIND_ALL_BY_TITLE)) {
             statement.setString(1, bookTitle);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Book book = new Book();
+                Reader reader = new Reader();
+                book.setId(resultSet.getLong(1));
+                book.setTitle(resultSet.getString(2));
+                book.setAuthor(resultSet.getString(3));
+                book.setAvailable(resultSet.getBoolean(4));
+
+                if (!book.isAvailable()) {
+                    reader.setId(resultSet.getLong(5));
+                    reader.setName(resultSet.getString(6));
+                    reader.setSurname(resultSet.getString(7));
+                    reader.setEmail(resultSet.getString(8));
+                }
+                book.setRent_date(resultSet.getDate(9));
+                book.setReader(reader);
+                books.add(book);
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return books;
+    }
+
+
+    List<Book> findByTitleAndAuthor(String bookTitle, String author) {
+        List<Book> books = new ArrayList<>();
+        try (PreparedStatement statement = this.connection.prepareStatement(FIND_ALL_BY_TITLE_AND_AUTHOR)) {
+            statement.setString(1, bookTitle);
+            statement.setString(2, author);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Book book = new Book();
