@@ -57,7 +57,12 @@ public class BookDAO extends DataAccessObject<Book> {
             "LEFT JOIN readers r on b.reader_id=r.id " +
             "WHERE b.title=? " +
             "AND b.author=?";
-    ;
+    private static final String MAKE_BOOK_AVAILABLE = "UPDATE books " +
+            "SET available = true, rent_date = CURRENT_DATE " +
+            "FROM books AS b " +
+            "RIGHT JOIN readers AS r ON b.reader_id=r.id " +
+            "WHERE books.id = ?";;
+
 
     private final BookByNameThenAuthorComparator bookByNameThenAuthorComparator;
 
@@ -277,6 +282,17 @@ public class BookDAO extends DataAccessObject<Book> {
         }
         if (authors.isEmpty()) throw new BookNotFoundException();
         return authors;
+    }
+
+    protected Book makeBookAvailable(long bookId) {
+        try (PreparedStatement statement = this.connection.prepareStatement(MAKE_BOOK_AVAILABLE)) {
+            statement.setLong(1, bookId);
+            statement.execute();
+            return this.findById(bookId);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException();
+        }
     }
 
     private void booksListResult(List<Book> books, PreparedStatement statement) throws SQLException {

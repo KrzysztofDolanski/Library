@@ -48,5 +48,9 @@ public class ReaderRepository {
     public List<String> findReadersBooks(long readerId) {
         return readerDAOCreator.getReaderDAO().findBooksByReaderId(readerId);
     }
+
+    public void giveBackBook(Reader reader, long bookId) {
+        readerDAOCreator.getReaderDAO().giveBackBook(reader, bookId);
+    }
 }
 

@@ -55,6 +55,7 @@ public class ReaderDAO extends DataAccessObject<Reader> {
         }
         return booksTitles;
     }
+
     @Override
     protected Reader findById(long id) {
         Reader reader = new Reader();
@@ -114,6 +115,7 @@ public class ReaderDAO extends DataAccessObject<Reader> {
             throw new RuntimeException();
         }
     }
+
 
     @Override
     protected Reader create(Reader dto) {
@@ -191,6 +193,10 @@ public class ReaderDAO extends DataAccessObject<Reader> {
         }
     }
 
-
-
+    public void giveBackBook(Reader reader, long bookId) {
+        List<Book> books = reader.getBooks().stream().filter(book -> book.getId() != bookId).toList();
+        reader.books.clear();
+        reader.setBooks(books);
+        update(reader);
+    }
 }

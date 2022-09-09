@@ -71,4 +71,8 @@ public class BookRepository {
     List<Optional<BookDTO>> findBooksByTitleAndAuthor(String title, String author) {
         return bookDAOCreator.getReaderDAO().findByTitleAndAuthor(title, author).stream().map(BookMapper::mapToDTO).map(Optional::of).toList();
     }
+
+    public Optional<BookDTO> makeBookAvailable(long bookId) {
+        return Optional.of(BookMapper.mapToDTO(bookDAOCreator.getReaderDAO().makeBookAvailable(bookId)));
+    }
 }

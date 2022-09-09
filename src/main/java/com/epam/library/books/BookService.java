@@ -1,5 +1,6 @@
 package com.epam.library.books;
 
+import com.epam.library.books.exceptions.BookNotBorrowedByGivenReaderException;
 import com.epam.library.books.exceptions.BookNotFoundException;
 import com.epam.library.books.exceptions.SaveBookException;
 import com.epam.library.readers.Reader;
@@ -78,6 +79,13 @@ public class BookService {
         return bookDTO;
     }
 
+
+    BookDTO giveBackBook(Reader reader, long bookId) {
+        if (reader.getBooks().stream().filter(book->book.getId()==bookId).toList().isEmpty()) throw new BookNotBorrowedByGivenReaderException(bookId, reader.getId());
+        readerService.giveBackBook(reader, bookId);
+        return bookRepository.makeBookAvailable(bookId).orElseThrow(BookNotFoundException::new);
+
+    }
     void deleteByTitleAuthorAndAvailability(String title, String author, boolean available) {
         bookRepository.deleteByTitleAuthorAvailable(title, author, available);
     }
@@ -101,5 +109,4 @@ public class BookService {
     List<BookDTO> findByTitleAndAuthor(String title, String author) {
         return bookRepository.findBooksByTitleAndAuthor(title, author).stream().map(Optional::get).toList();
     }
-
 }

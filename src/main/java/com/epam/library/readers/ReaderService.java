@@ -49,4 +49,8 @@ public class ReaderService {
     public List<String> findReadersBooks(long readerId) {
         return readerRepository.findReadersBooks(readerId);
     }
+
+    public void giveBackBook(Reader reader, long bookId) {
+        readerRepository.giveBackBook(reader, bookId);
+    }
 }
