@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReaderService {
@@ -20,7 +21,7 @@ public class ReaderService {
         return readerRepository.create(reader);
     }
 
-    Reader findById(long id) {
+    public Optional<Reader> findById(long id) {
         return readerRepository.findById(id);
     }
 
@@ -37,7 +38,7 @@ public class ReaderService {
         readerRepository.deleteAllReaders();
     }
 
-    Reader update(Reader reader) {
+    Optional<Reader> update(Reader reader) {
         return readerRepository.update(reader);
     }
 

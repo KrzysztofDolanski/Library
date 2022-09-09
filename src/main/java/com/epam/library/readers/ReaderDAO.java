@@ -2,6 +2,8 @@ package com.epam.library.readers;
 
 import com.epam.library.books.Book;
 import com.epam.library.database.DataAccessObject;
+import com.epam.library.readers.exceptions.EmptyReadersDatabaseException;
+import com.epam.library.readers.exceptions.ReaderNotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -40,6 +42,19 @@ public class ReaderDAO extends DataAccessObject<Reader> {
         super(connection);
     }
 
+    public List<String> findBooksByReaderId(long id) {
+        List<String> booksTitles = new ArrayList<>();
+        try (PreparedStatement statement = this.connection.prepareStatement(FIND_READERS_BOOKS)) {
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                booksTitles.add(resultSet.getString(1));
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return booksTitles;
+    }
     @Override
     protected Reader findById(long id) {
         Reader reader = new Reader();
@@ -67,6 +82,7 @@ public class ReaderDAO extends DataAccessObject<Reader> {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+        if (reader.getName() == null) throw new ReaderNotFoundException();
         return reader;
     }
 
@@ -75,27 +91,11 @@ public class ReaderDAO extends DataAccessObject<Reader> {
         List<Reader> readers = new ArrayList<>();
         try (PreparedStatement statement = this.connection.prepareStatement(FIND_ALL_READERS)) {
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Reader reader = new Reader();
-                List<Book> books = new ArrayList<>();
-                Book book = new Book();
-                reader.setId(resultSet.getLong(1));
-                reader.setName(resultSet.getString(2));
-                reader.setSurname(resultSet.getString(3));
-                reader.setEmail(resultSet.getString(4));
-                book.setId(resultSet.getLong(5));
-                book.setTitle(resultSet.getString(6));
-                book.setAuthor(resultSet.getString(7));
-                book.setAvailable(resultSet.getBoolean(8));
-                book.setRent_date(resultSet.getDate(9));
-                books.add(book);
-
-                reader.setBooks(books);
-                readers.add(reader);
-            }
+            readersListResult(readers, resultSet);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+        if (readers.isEmpty()) throw new EmptyReadersDatabaseException();
         return readers;
     }
 
@@ -146,7 +146,7 @@ public class ReaderDAO extends DataAccessObject<Reader> {
         return findById(lastVal);
     }
 
-    public void deleteAllReaders() {
+    protected void deleteAllReaders() {
         try (PreparedStatement statement = this.connection.prepareStatement(REMOVE_ALL)) {
             statement.execute();
         } catch (SQLException e) {
@@ -154,54 +154,43 @@ public class ReaderDAO extends DataAccessObject<Reader> {
         }
     }
 
-    public List<Reader> findByNameAndSurname(String readerName, String readerSurname) {
+    protected List<Reader> findByNameAndSurname(String readerName, String readerSurname) {
         List<Reader> readers = new ArrayList<>();
 
         try (PreparedStatement statement = this.connection.prepareStatement(FIND_ALL_BY_NAME_AND_SURNAME)) {
             statement.setString(1, readerName);
             statement.setString(2, readerSurname);
             ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                Reader reader = new Reader();
-                List<Book> books = new ArrayList<>();
-                Book book = new Book();
-                reader.setId(resultSet.getLong(1));
-                reader.setName(resultSet.getString(2));
-                reader.setSurname(resultSet.getString(3));
-                reader.setEmail(resultSet.getString(4));
-
-                book.setId(resultSet.getLong(5));
-                book.setTitle(resultSet.getString(6));
-                book.setAuthor(resultSet.getString(7));
-                book.setAvailable(resultSet.getBoolean(8));
-                book.setRent_date(resultSet.getDate(9));
-                books.add(book);
-
-                reader.setBooks(books);
-                readers.add(reader);
-            }
+            readersListResult(readers, resultSet);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+        if (readers.isEmpty()) throw new ReaderNotFoundException();
         return readers;
     }
 
+    private void readersListResult(List<Reader> readers, ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            Reader reader = new Reader();
+            List<Book> books = new ArrayList<>();
+            Book book = new Book();
+            reader.setId(resultSet.getLong(1));
+            reader.setName(resultSet.getString(2));
+            reader.setSurname(resultSet.getString(3));
+            reader.setEmail(resultSet.getString(4));
 
-    public List<String> findBooksByReaderId(long id) {
-        List<String> booksTitles = new ArrayList<>();
-        try (PreparedStatement statement = this.connection.prepareStatement(FIND_READERS_BOOKS)) {
-            statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery();
+            book.setId(resultSet.getLong(5));
+            book.setTitle(resultSet.getString(6));
+            book.setAuthor(resultSet.getString(7));
+            book.setAvailable(resultSet.getBoolean(8));
+            book.setRent_date(resultSet.getDate(9));
+            books.add(book);
 
-            while (resultSet.next()) {
-                booksTitles.add(resultSet.getString(1));
-            }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            reader.setBooks(books);
+            readers.add(reader);
         }
-        return booksTitles;
     }
+
 
 
 }

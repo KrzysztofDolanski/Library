@@ -1,4 +1,4 @@
-package com.epam.library.readers;
+package com.epam.library.readers.exceptions;
 
 public class ReadersBooksNotReturnedException extends RuntimeException {
 

@@ -1,5 +1,7 @@
 package com.epam.library.books;
 
+import com.epam.library.books.exceptions.BookNotFoundException;
+import com.epam.library.books.exceptions.EmptyBooksDatabaseException;
 import com.epam.library.database.DataAccessObject;
 import com.epam.library.readers.Reader;
 
@@ -54,9 +56,11 @@ public class BookDAO extends DataAccessObject<Book> {
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id " +
             "WHERE b.title=? " +
-            "AND b.author=?";;
+            "AND b.author=?";
+    ;
 
     private final BookByNameThenAuthorComparator bookByNameThenAuthorComparator;
+
     BookDAO(Connection connection) {
         super(connection);
         bookByNameThenAuthorComparator = new BookByNameThenAuthorComparator();
@@ -89,6 +93,7 @@ public class BookDAO extends DataAccessObject<Book> {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+        if (book.getTitle() == null) throw new BookNotFoundException();
         return book;
     }
 
@@ -117,6 +122,7 @@ public class BookDAO extends DataAccessObject<Book> {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+        if (books.isEmpty()) throw new EmptyBooksDatabaseException();
         return books.stream().sorted(bookByNameThenAuthorComparator).toList();
     }
 
@@ -135,7 +141,6 @@ public class BookDAO extends DataAccessObject<Book> {
             throw new RuntimeException();
         }
     }
-
 
     @Override
     protected Book create(Book dto) {
@@ -157,6 +162,7 @@ public class BookDAO extends DataAccessObject<Book> {
     @Override
     protected void deleteById(long id) {
         try (PreparedStatement statement = this.connection.prepareStatement(REMOVE_BY_ID)) {
+            if (findById(id).getTitle() == null) throw new BookNotFoundException();
             statement.setLong(1, id);
             statement.execute();
         } catch (SQLException e) {
@@ -173,59 +179,24 @@ public class BookDAO extends DataAccessObject<Book> {
         List<Book> books = new ArrayList<>();
         try (PreparedStatement statement = this.connection.prepareStatement(FIND_ALL_BY_TITLE)) {
             statement.setString(1, bookTitle);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Book book = new Book();
-                Reader reader = new Reader();
-                book.setId(resultSet.getLong(1));
-                book.setTitle(resultSet.getString(2));
-                book.setAuthor(resultSet.getString(3));
-                book.setAvailable(resultSet.getBoolean(4));
-
-                if (!book.isAvailable()) {
-                    reader.setId(resultSet.getLong(5));
-                    reader.setName(resultSet.getString(6));
-                    reader.setSurname(resultSet.getString(7));
-                    reader.setEmail(resultSet.getString(8));
-                }
-                book.setRent_date(resultSet.getDate(9));
-                book.setReader(reader);
-                books.add(book);
-            }
+            booksListResult(books, statement);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+        if (books.isEmpty()) throw new BookNotFoundException();
         return books;
     }
-
 
     List<Book> findByTitleAndAuthor(String bookTitle, String author) {
         List<Book> books = new ArrayList<>();
         try (PreparedStatement statement = this.connection.prepareStatement(FIND_ALL_BY_TITLE_AND_AUTHOR)) {
             statement.setString(1, bookTitle);
             statement.setString(2, author);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Book book = new Book();
-                Reader reader = new Reader();
-                book.setId(resultSet.getLong(1));
-                book.setTitle(resultSet.getString(2));
-                book.setAuthor(resultSet.getString(3));
-                book.setAvailable(resultSet.getBoolean(4));
-
-                if (!book.isAvailable()) {
-                    reader.setId(resultSet.getLong(5));
-                    reader.setName(resultSet.getString(6));
-                    reader.setSurname(resultSet.getString(7));
-                    reader.setEmail(resultSet.getString(8));
-                }
-                book.setRent_date(resultSet.getDate(9));
-                book.setReader(reader);
-                books.add(book);
-            }
+            booksListResult(books, statement);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+        if (books.isEmpty()) throw new BookNotFoundException();
         return books;
     }
 
@@ -257,12 +228,15 @@ public class BookDAO extends DataAccessObject<Book> {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+        if (books.isEmpty()) throw new BookNotFoundException();
         return books;
     }
 
 
     void deleteByTitleAuthorAvailable(String title, String author, boolean available) {
         try (PreparedStatement statement = this.connection.prepareStatement(REMOVE_BY_TITLE_AUTHOR_AVAILABILITY)) {
+            if (findByTitleAndAuthor(title, author).stream().filter(Book::isAvailable).toList().isEmpty())
+                throw new BookNotFoundException();
             statement.setString(1, title);
             statement.setString(2, author);
             statement.setBoolean(3, available);
@@ -274,6 +248,7 @@ public class BookDAO extends DataAccessObject<Book> {
 
     void deleteByTitle(String title) {
         try (PreparedStatement statement = this.connection.prepareStatement(REMOVE_BY_TITLE)) {
+            if (findByTitle(title).isEmpty()) throw new BookNotFoundException();
             statement.setString(1, title);
             statement.execute();
         } catch (SQLException e) {
@@ -289,7 +264,7 @@ public class BookDAO extends DataAccessObject<Book> {
         }
     }
 
-    public List<String> getAuthorsByTitle(String title) {
+    protected List<String> getAuthorsByTitle(String title) {
         List<String> authors = new ArrayList<>();
         try (PreparedStatement statement = this.connection.prepareStatement(FIND_ALL_AUTHORS_BY_TITLE)) {
             statement.setString(1, title);
@@ -300,6 +275,29 @@ public class BookDAO extends DataAccessObject<Book> {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+        if (authors.isEmpty()) throw new BookNotFoundException();
         return authors;
+    }
+
+    private void booksListResult(List<Book> books, PreparedStatement statement) throws SQLException {
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            Book book = new Book();
+            Reader reader = new Reader();
+            book.setId(resultSet.getLong(1));
+            book.setTitle(resultSet.getString(2));
+            book.setAuthor(resultSet.getString(3));
+            book.setAvailable(resultSet.getBoolean(4));
+
+            if (!book.isAvailable()) {
+                reader.setId(resultSet.getLong(5));
+                reader.setName(resultSet.getString(6));
+                reader.setSurname(resultSet.getString(7));
+                reader.setEmail(resultSet.getString(8));
+            }
+            book.setRent_date(resultSet.getDate(9));
+            book.setReader(reader);
+            books.add(book);
+        }
     }
 }

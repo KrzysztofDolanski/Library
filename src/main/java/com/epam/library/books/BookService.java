@@ -1,7 +1,10 @@
 package com.epam.library.books;
 
+import com.epam.library.books.exceptions.BookNotFoundException;
+import com.epam.library.books.exceptions.SaveBookException;
 import com.epam.library.readers.Reader;
-import com.epam.library.readers.ReaderRepository;
+import com.epam.library.readers.exceptions.ReaderNotFoundException;
+import com.epam.library.readers.ReaderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,18 +15,19 @@ import java.util.Optional;
 public class BookService {
 
     private final BookRepository bookRepository;
-    private final ReaderRepository readerRepository;
+
+    private final ReaderService readerService;
 
     @Autowired
-    BookService(BookRepository bookRepository, ReaderRepository readerRepository) {
+    BookService(BookRepository bookRepository, ReaderService readerService) {
         this.bookRepository = bookRepository;
-        this.readerRepository = readerRepository;
+        this.readerService = readerService;
     }
 
     BookDTO findById(Long bookId) {
         BookDTO bookDTO = null;
         try {
-            bookDTO = bookRepository.findById(bookId);
+            bookDTO = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
         } catch (BookNotFoundException e) {
             System.out.println(e.getMessage());
         }
@@ -31,15 +35,15 @@ public class BookService {
     }
 
     List<BookDTO> findByTitle(String title) {
-        return bookRepository.findBooksByTitle(title);
+        return bookRepository.findBooksByTitle(title).stream().map(Optional::get).toList();
     }
 
     List<BookDTO> findByDate(String startDate, String endDate) {
-        return bookRepository.findBooksByDate(startDate, endDate);
+        return bookRepository.findBooksByDate(startDate, endDate).stream().map(Optional::get).toList();
     }
 
     BookDTO save(BookDTO bookDTO) {
-        return bookRepository.create(bookDTO);
+        return bookRepository.create(bookDTO).orElseThrow(SaveBookException::new);
     }
 
     void delete(Long bookId) {
@@ -50,13 +54,18 @@ public class BookService {
         Reader borrower = null;
         BookDTO bookDTO = null;
         if (readerId != null) {
-            borrower = readerRepository.findById(readerId);
+            borrower = readerService.findById(readerId).orElseThrow(ReaderNotFoundException::new);
         } else {
             System.err.println("You must provide id.");
         }
         if (borrower != null) {
             if (borrower.getName().equals(readerName) && borrower.getSurname().equals(readerSurname)) {
-                bookDTO = bookRepository.findBooksByTitle(bookTitle).stream().filter(BookDTO::isAvailable).findAny().orElseThrow();
+                bookDTO = bookRepository.findBooksByTitle(bookTitle)
+                        .stream()
+                        .map(Optional::get)
+                        .filter(BookDTO::isAvailable)
+                        .findAny()
+                        .orElseThrow();
                 if (bookDTO.isAvailable()) {
                     bookDTO.setReader(borrower);
                     bookDTO.setAvailable(false);
@@ -82,7 +91,7 @@ public class BookService {
     }
 
     List<BookDTO> findAll() {
-        return bookRepository.findAll();
+        return bookRepository.findAll().stream().map(Optional::get).toList();
     }
 
     String getAuthorByTitle(String title) {
@@ -90,7 +99,7 @@ public class BookService {
     }
 
     List<BookDTO> findByTitleAndAuthor(String title, String author) {
-        return bookRepository.findBooksByTitleAndAuthor(title, author).stream().map(BookMapper::mapToDTO).toList();
+        return bookRepository.findBooksByTitleAndAuthor(title, author).stream().map(Optional::get).toList();
     }
 
 }

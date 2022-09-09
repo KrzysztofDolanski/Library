@@ -1,4 +1,4 @@
-package com.epam.library.books;
+package com.epam.library.books.exceptions;
 
 import java.lang.module.FindException;
 

@@ -3,8 +3,8 @@ package com.epam.library.readers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.servlet.http.Cookie;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ReaderRepository {
@@ -17,12 +17,11 @@ public class ReaderRepository {
         this.readerDAOCreator = readerDAOCreator;
     }
 
-    public Reader findById(long id) {
-        return readerDAOCreator.getReaderDAO().findById(id);
+    Optional<Reader> findById(long id) {
+        return Optional.of(readerDAOCreator.getReaderDAO().findById(id));
     }
 
     Reader create(Reader reader) {
-
         return readerDAOCreator.getReaderDAO().create(reader);
     }
 
@@ -38,8 +37,8 @@ public class ReaderRepository {
         readerDAOCreator.getReaderDAO().deleteAllReaders();
     }
 
-    Reader update(Reader reader) {
-        return readerDAOCreator.getReaderDAO().update(reader);
+    Optional<Reader> update(Reader reader) {
+        return Optional.of(readerDAOCreator.getReaderDAO().update(reader));
     }
 
     List<Reader> findByNameAndSurname(String readerName, String readerSurname) {

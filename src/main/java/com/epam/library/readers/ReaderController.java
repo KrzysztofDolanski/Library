@@ -1,7 +1,9 @@
 package com.epam.library.readers;
 
+import com.epam.library.readers.exceptions.ReaderNotFoundException;
+import com.epam.library.readers.exceptions.ReaderUpdateException;
+import com.epam.library.readers.exceptions.ReadersBooksNotReturnedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +60,7 @@ public class ReaderController {
         Reader reader;
         String cookie = "";
         try {
-            reader = readerService.findById(readerId);
+            reader = readerService.findById(readerId).orElseThrow(ReaderNotFoundException::new);
             readerIdCookie.setReader(reader);
             cookie += readerIdCookie.readerIdCookie.toString();
         } catch (ReaderNotFoundException e) {
@@ -101,10 +103,8 @@ public class ReaderController {
     @DeleteMapping(value = "", params = "readerId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> delete(@RequestParam("readerId") long readerId) {
         String cookie = "";
-        HttpHeaders headers = new HttpHeaders();
         try {
-            readerIdCookie.setReader(readerService.findById(readerId));
-
+            readerIdCookie.setReader(readerService.findById(readerId).orElseThrow(ReaderNotFoundException::new));
             List<String> bookTitles = readerService.findReadersBooks(readerId);
             if (bookTitles.isEmpty()) {
                 readerService.deleteById(readerId);
@@ -129,12 +129,13 @@ public class ReaderController {
 
     @PutMapping("")
     public ResponseEntity<Reader> update(@RequestBody Reader reader) {
-        Reader updated = readerService.update(reader);
-        readerIdCookie.setReader(reader);
         String cookie = "";
+        Reader updated;
         try {
+            updated = readerService.update(reader).orElseThrow(ReaderUpdateException::new);
+            readerIdCookie.setReader(reader);
             cookie += readerIdCookie.readerIdCookie.toString();
-        } catch (ReaderNotFoundException e) {
+        } catch (ReaderNotFoundException | ReaderUpdateException e) {
             System.err.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.NOT_IMPLEMENTED)
