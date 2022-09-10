@@ -4,7 +4,6 @@ import com.epam.library.cache.DTO;
 import com.epam.library.readers.Reader;
 
 import java.util.Date;
-import java.util.function.Predicate;
 
 public class BookDTO extends DTO {
 
@@ -17,6 +16,11 @@ public class BookDTO extends DTO {
     private Date date;
 
     public BookDTO() {
+    }
+
+    public BookDTO(String title, String author) {
+        this.title = title;
+        this.author = author;
     }
 
     public BookDTO(Long id, String title, String author, boolean available, Reader reader, Date date) {

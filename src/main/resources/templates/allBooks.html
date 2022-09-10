@@ -1,8 +1,15 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
 <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>All Books</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 </head>
+
 <body th:fragment="books">
 <div class="container">
     <div class="row">
@@ -17,14 +24,18 @@
                 <tr>
                     <th> Title </th>
                     <th> Author </th>
+                    <th> Available </th>
+                    <th> Reader </th>
                 </tr>
                 </thead>
 <!--                <tbody th:action="get" th:href="/books" th:object="${books}">-->
                 <tr th:each="book : ${books}">
                     <td><span th:text="${book.title}"> Title </span></td>
                     <td><span th:text="${book.author}"> Author </span></td>
+                    <td><span th:text="${book.available}"> Available </span></td>
+                    <td><span th:text="${book.reader.name}"> Reader </span></td>
+
                 </tr>
-                </tbody>
             </table>
         </div>
         <div class="col-md-6">

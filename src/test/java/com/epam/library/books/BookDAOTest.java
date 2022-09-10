@@ -1,5 +1,6 @@
 package com.epam.library.books;
 
+import com.epam.library.readers.ReaderDAO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -12,8 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class BookDAOTest {

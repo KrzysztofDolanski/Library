@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
@@ -77,8 +77,7 @@ public class BookController {
                 .body(byTitle);
     }
 
-    @GetMapping("")
-    public ResponseEntity<List<BookDTO>> findAllBooks(Model model) {
+    public ResponseEntity<List<BookDTO>> findAllBooks() {
         List<BookDTO> all = bookService.findAll();
         if (all.isEmpty()) {
             return ResponseEntity
@@ -86,11 +85,18 @@ public class BookController {
                     .header(SET_COOKIE, bookCookie.responseCookie.toString())
                     .build();
         }
-        model.addAttribute("books", all);
-        return ResponseEntity
+       return ResponseEntity
                 .status(HttpStatus.OK)
                 .header(SET_COOKIE, bookCookie.responseCookie.toString())
                 .body(all);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ModelAndView showAllBooks(Model model){
+        ResponseEntity<List<BookDTO>> allBooks = findAllBooks();
+        ModelAndView mav = new ModelAndView("allBooks");
+        mav.addObject("books", allBooks.getBody());
+        return mav;
     }
 
     @GetMapping(value = "", params = {"startDate", "endDate"}, produces = MediaType.APPLICATION_JSON_VALUE)

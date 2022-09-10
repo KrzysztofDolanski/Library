@@ -10,7 +10,7 @@ public class WelcomePage {
 
 
     @GetMapping
-    String start(){
+    String start() {
         return "index";
     }
 

@@ -13,6 +13,15 @@ public class Reader implements DataTransferObject {
     private String surname;
     private String email;
 
+    public Reader(String name, String surname, String email) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+    }
+
+    public Reader() {
+    }
+
     List<Book> books;
     @Override
     public Long getId() {
