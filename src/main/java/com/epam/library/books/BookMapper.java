@@ -9,6 +9,7 @@ public class BookMapper {
         bookDTO.setAvailable(book.isAvailable());
         bookDTO.setReader(book.getReader());
         bookDTO.setDate(book.getRent_date());
+        bookDTO.setTimes_of_borrowing(book.getTimes_of_borrowing());
         return bookDTO;
     }
 
@@ -20,6 +21,7 @@ public class BookMapper {
                 .available(bookDTO.isAvailable())
                 .reader(bookDTO.getReader())
                 .date(bookDTO.getDate())
+                .timesOfBorrowing(bookDTO.getTimes_of_borrowing())
                 .build();
     }
 }

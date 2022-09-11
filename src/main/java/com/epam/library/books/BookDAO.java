@@ -25,21 +25,21 @@ public class BookDAO extends DataAccessObject<Book> {
     private static final String REMOVE_BY_TITLE = "DELETE FROM books b WHERE b.title=?";
 
     private static final String UPDATE_BOOK = "UPDATE books " +
-            "SET id = ?, title = ?, author = ?, available = ?, reader_id=r.id, rent_date = CURRENT_DATE " +
+            "SET id = ?, title = ?, author = ?, available = ?, reader_id= ? , rent_date = CURRENT_DATE, times_of_borrowing = ? " +
             "FROM books AS b " +
             "RIGHT JOIN readers AS r ON b.reader_id=r.id " +
             "WHERE books.id = ?";
 
-    private static final String FIND_BY_ID = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date " +
+    private static final String FIND_BY_ID = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date, b.times_of_borrowing " +
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id " +
             "WHERE b.id=?";
-    private static final String FIND_ALL_BY_TITLE = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date " +
+    private static final String FIND_ALL_BY_TITLE = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date, b.times_of_borrowing " +
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id " +
             "WHERE b.title=?";
 
-    private static final String FIND_ALL_BY_DATE = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date " +
+    private static final String FIND_ALL_BY_DATE = "SELECT b.id, b.title, b.author, b.available, r.id, r.name, r.surname, r.email, b.rent_date, b.times_of_borrowing " +
             "FROM books b " +
             "LEFT JOIN readers r on b.reader_id=r.id " +
             "WHERE rent_date BETWEEN ? AND ?";
@@ -61,8 +61,7 @@ public class BookDAO extends DataAccessObject<Book> {
             "SET available = true, rent_date = CURRENT_DATE " +
             "FROM books AS b " +
             "RIGHT JOIN readers AS r ON b.reader_id=r.id " +
-            "WHERE books.id = ?";;
-
+            "WHERE books.id = ?";
 
     private final BookByNameThenAuthorComparator bookByNameThenAuthorComparator;
 
@@ -92,6 +91,7 @@ public class BookDAO extends DataAccessObject<Book> {
                     reader.setEmail(resultSet.getString(8));
 
                     book.setRent_date(resultSet.getDate(9));
+                    book.setTimes_of_borrowing(resultSet.getLong(10));
                     book.setReader(reader);
                 }
             }
@@ -138,7 +138,13 @@ public class BookDAO extends DataAccessObject<Book> {
             statement.setString(2, dto.getTitle());
             statement.setString(3, dto.getAuthor());
             statement.setBoolean(4, dto.isAvailable());
-            statement.setLong(5, dto.getId());
+            if (dto.getReader().getName()==null){
+            statement.setLong(5, 1);
+            } else {
+            statement.setLong(5, dto.getReader().getId());
+            }
+            statement.setLong(6, dto.getTimes_of_borrowing());
+            statement.setLong(7, dto.getId());
             statement.execute();
             return this.findById(dto.getId());
         } catch (SQLException e) {
@@ -219,7 +225,6 @@ public class BookDAO extends DataAccessObject<Book> {
                 book.setTitle(resultSet.getString(2));
                 book.setAuthor(resultSet.getString(3));
                 book.setAvailable(resultSet.getBoolean(4));
-
                 if (!book.isAvailable()) {
                     reader.setId(resultSet.getLong(5));
                     reader.setName(resultSet.getString(6));
@@ -228,6 +233,7 @@ public class BookDAO extends DataAccessObject<Book> {
                 }
                 book.setReader(reader);
                 book.setRent_date(resultSet.getDate(9));
+                book.setTimes_of_borrowing(resultSet.getLong(10));
                 books.add(book);
             }
         } catch (SQLException e) {
@@ -312,6 +318,7 @@ public class BookDAO extends DataAccessObject<Book> {
                 reader.setEmail(resultSet.getString(8));
             }
             book.setRent_date(resultSet.getDate(9));
+            book.setTimes_of_borrowing(resultSet.getLong(10));
             book.setReader(reader);
             books.add(book);
         }

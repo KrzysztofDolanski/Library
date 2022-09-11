@@ -32,7 +32,7 @@ public class ReaderDAO extends DataAccessObject<Reader> {
     private static final String UPDATE_READER = "UPDATE readers " +
             "SET id = ?, name = ?, surname = ?, email = ? " +
             "WHERE id = ?";
-    ;
+
     private static final String FIND_ALL_BY_NAME_AND_SURNAME = "SELECT r.id, r.name, r.surname, r.email, b.id, b.title, b.author, b.available, b.rent_date " +
             "FROM readers r " +
             "LEFT JOIN books b on r.id=b.reader_id " +
@@ -191,12 +191,5 @@ public class ReaderDAO extends DataAccessObject<Reader> {
             reader.setBooks(books);
             readers.add(reader);
         }
-    }
-
-    public void giveBackBook(Reader reader, long bookId) {
-        List<Book> books = reader.getBooks().stream().filter(book -> book.getId() != bookId).toList();
-        reader.books.clear();
-        reader.setBooks(books);
-        update(reader);
     }
 }

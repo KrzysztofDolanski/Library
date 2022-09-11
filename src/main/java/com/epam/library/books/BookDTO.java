@@ -15,21 +15,14 @@ public class BookDTO extends DTO {
 
     private Date date;
 
+    private Long times_of_borrowing;
+
     public BookDTO() {
     }
 
     public BookDTO(String title, String author) {
         this.title = title;
         this.author = author;
-    }
-
-    public BookDTO(Long id, String title, String author, boolean available, Reader reader, Date date) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.available = available;
-        this.reader = reader;
-        this.date = date;
     }
 
     public Long getId() {
@@ -80,6 +73,14 @@ public class BookDTO extends DTO {
         this.date = date;
     }
 
+    public Long getTimes_of_borrowing() {
+        return times_of_borrowing;
+    }
+
+    public void setTimes_of_borrowing(Long times_of_borrowing) {
+        this.times_of_borrowing = times_of_borrowing;
+    }
+
     @Override
     public String toString() {
         return "BookDTO{" +
@@ -88,8 +89,8 @@ public class BookDTO extends DTO {
                 ", author='" + author + '\'' +
                 ", available=" + available +
                 ", reader=" + reader +
-                ", zone=" + date +
+                ", date=" + date +
+                ", times_of_borrowing=" + times_of_borrowing +
                 '}';
     }
-
 }

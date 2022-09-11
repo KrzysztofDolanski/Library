@@ -14,6 +14,7 @@ public class Book implements DataTransferObject {
     private Reader reader;
     private Date rent_date;
 
+    private Long times_of_borrowing;
     public void setId(Long id) {
         this.id = id;
     }
@@ -63,6 +64,14 @@ public class Book implements DataTransferObject {
         this.rent_date = rent_date;
     }
 
+    public Long getTimes_of_borrowing() {
+        return times_of_borrowing;
+    }
+
+    public void setTimes_of_borrowing(Long times_of_borrowing) {
+        this.times_of_borrowing = times_of_borrowing;
+    }
+
     public static final class Builder {
         Long id;
         String title;
@@ -70,6 +79,7 @@ public class Book implements DataTransferObject {
         boolean available;
         Reader reader;
         Date date;
+        Long times_of_borrowing;
 
         public Builder id(Long id) {
             this.id = id;
@@ -101,6 +111,11 @@ public class Book implements DataTransferObject {
             return this;
         }
 
+        public Builder timesOfBorrowing(Long timesOfBorrowing){
+            this.times_of_borrowing = timesOfBorrowing;
+            return this;
+        }
+
         public Book build() {
             if (title.isEmpty()) {
                 throw new IllegalStateException("Cannot save book without title");
@@ -112,6 +127,7 @@ public class Book implements DataTransferObject {
             book.available = this.available;
             book.reader = this.reader;
             book.rent_date = this.date;
+            book.times_of_borrowing = this.times_of_borrowing;
             return book;
         }
     }

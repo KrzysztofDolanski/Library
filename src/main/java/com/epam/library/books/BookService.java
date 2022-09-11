@@ -70,6 +70,7 @@ public class BookService {
                 if (bookDTO.isAvailable()) {
                     bookDTO.setReader(borrower);
                     bookDTO.setAvailable(false);
+                    bookDTO.setTimes_of_borrowing(bookDTO.getTimes_of_borrowing() + 1);
                     bookRepository.update(bookDTO);
                 }
             } else {
@@ -81,11 +82,15 @@ public class BookService {
 
 
     BookDTO giveBackBook(Reader reader, long bookId) {
-        if (reader.getBooks().stream().filter(book->book.getId()==bookId).toList().isEmpty()) throw new BookNotBorrowedByGivenReaderException(bookId, reader.getId());
-        readerService.giveBackBook(reader, bookId);
-        return bookRepository.makeBookAvailable(bookId).orElseThrow(BookNotFoundException::new);
-
+        if (reader.getBooks().stream().filter(book -> book.getId() == bookId).toList().isEmpty())
+            throw new BookNotBorrowedByGivenReaderException(bookId, reader.getId());
+        BookDTO bookDTO = bookRepository.findById(bookId).get();
+        bookDTO.setReader(new Reader());
+        bookDTO.setAvailable(true);
+        bookRepository.update(bookDTO);
+        return bookDTO;
     }
+
     void deleteByTitleAuthorAndAvailability(String title, String author, boolean available) {
         bookRepository.deleteByTitleAuthorAvailable(title, author, available);
     }

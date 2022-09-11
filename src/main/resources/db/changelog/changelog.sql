@@ -1,5 +1,4 @@
 
-
 CREATE TABLE IF NOT EXISTS readers
 (
     id
@@ -21,6 +20,7 @@ CREATE TABLE IF NOT EXISTS books
     available BOOLEAN,
     reader_id INTEGER,
     rent_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    times_of_borrowing INTEGER DEFAULT 1,
     PRIMARY KEY
         (
          id
@@ -33,7 +33,6 @@ CREATE TABLE IF NOT EXISTS books
              id
                 )
 );
-
 
 CREATE OR REPLACE FUNCTION check_name() RETURNS TRIGGER
     LANGUAGE plpgsql

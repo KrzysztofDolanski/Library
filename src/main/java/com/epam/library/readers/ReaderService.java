@@ -3,7 +3,6 @@ package com.epam.library.readers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,7 +49,4 @@ public class ReaderService {
         return readerRepository.findReadersBooks(readerId);
     }
 
-    public void giveBackBook(Reader reader, long bookId) {
-        readerRepository.giveBackBook(reader, bookId);
-    }
 }
