@@ -5,11 +5,10 @@ import com.epam.library.books.BookDTO;
 
 import java.util.function.Function;
 
-public class BookToDTOFunction implements Function<Book, BookDTO> {
+public class BookToDTOFunction {
 
-    private Function<Book, BookDTO> function = b -> new BookMapper().mapToDTO(b);
+    private final Function<Book, BookDTO> function = b -> new BookMapper().mapToDTO(b);
 
-    @Override
     public BookDTO apply(Book book) {
         return function.apply(book);
     }
