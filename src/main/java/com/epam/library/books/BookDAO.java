@@ -2,6 +2,7 @@ package com.epam.library.books;
 
 import com.epam.library.books.exceptions.BookNotFoundException;
 import com.epam.library.books.exceptions.EmptyBooksDatabaseException;
+import com.epam.library.books.functions.BookAvailablePredicate;
 import com.epam.library.database.DataAccessObject;
 import com.epam.library.readers.Reader;
 
@@ -115,7 +116,7 @@ public class BookDAO extends DataAccessObject<Book> {
                 book.setAuthor(resultSet.getString(3));
                 book.setAvailable(resultSet.getBoolean(4));
 
-                if (!book.isAvailable()) {
+                if (!new BookAvailablePredicate().test(book)) {
                     reader.setId(resultSet.getLong(5));
                     reader.setName(resultSet.getString(6));
                     reader.setSurname(resultSet.getString(7));
@@ -225,7 +226,7 @@ public class BookDAO extends DataAccessObject<Book> {
                 book.setTitle(resultSet.getString(2));
                 book.setAuthor(resultSet.getString(3));
                 book.setAvailable(resultSet.getBoolean(4));
-                if (!book.isAvailable()) {
+                if (!new BookAvailablePredicate().test(book)) {
                     reader.setId(resultSet.getLong(5));
                     reader.setName(resultSet.getString(6));
                     reader.setSurname(resultSet.getString(7));
@@ -246,7 +247,11 @@ public class BookDAO extends DataAccessObject<Book> {
 
     void deleteByTitleAuthorAvailable(String title, String author, boolean available) {
         try (PreparedStatement statement = this.connection.prepareStatement(REMOVE_BY_TITLE_AUTHOR_AVAILABILITY)) {
-            if (findByTitleAndAuthor(title, author).stream().filter(Book::isAvailable).toList().isEmpty())
+            if (findByTitleAndAuthor(title, author)
+                    .stream()
+                    .filter(book -> new BookAvailablePredicate().test(book))
+                    .toList()
+                    .isEmpty())
                 throw new BookNotFoundException();
             statement.setString(1, title);
             statement.setString(2, author);
@@ -311,7 +316,7 @@ public class BookDAO extends DataAccessObject<Book> {
             book.setAuthor(resultSet.getString(3));
             book.setAvailable(resultSet.getBoolean(4));
 
-            if (!book.isAvailable()) {
+            if (!new BookAvailablePredicate().test(book)) {
                 reader.setId(resultSet.getLong(5));
                 reader.setName(resultSet.getString(6));
                 reader.setSurname(resultSet.getString(7));
