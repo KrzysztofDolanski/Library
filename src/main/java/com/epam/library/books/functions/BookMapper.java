@@ -1,7 +1,10 @@
-package com.epam.library.books;
+package com.epam.library.books.functions;
 
-public class BookMapper {
-    public static BookDTO mapToDTO(Book book) {
+import com.epam.library.books.Book;
+import com.epam.library.books.BookDTO;
+
+class BookMapper {
+    protected BookDTO mapToDTO(Book book) {
         BookDTO bookDTO = new BookDTO();
         bookDTO.setId(book.getId());
         bookDTO.setTitle(book.getTitle());
@@ -13,7 +16,7 @@ public class BookMapper {
         return bookDTO;
     }
 
-    public static Book mapToBook(BookDTO bookDTO) {
+    protected Book mapToBook(BookDTO bookDTO) {
         return new Book.Builder()
                 .id(bookDTO.getId())
                 .title(bookDTO.getTitle())

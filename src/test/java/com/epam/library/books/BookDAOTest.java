@@ -1,6 +1,6 @@
 package com.epam.library.books;
 
-import com.epam.library.readers.ReaderDAO;
+import com.epam.library.books.functions.BookToDTOFunction;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -13,7 +13,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class BookDAOTest {
@@ -73,7 +74,7 @@ class BookDAOTest {
         Book book = new Book.Builder().title(title).author("Sienkiewicz").build();
         bookDAO.create(book);
         //when
-        List<BookDTO> byTitle = bookDAO.findByTitle(title).stream().map(BookMapper::mapToDTO).toList();
+        List<BookDTO> byTitle = bookDAO.findByTitle(title).stream().map(x-> new BookToDTOFunction().apply(x)).toList();
         //then
         assertTrue(byTitle.stream().anyMatch(entity -> entity.getTitle().equals(title)));
     }

@@ -1,5 +1,7 @@
 package com.epam.library.books;
 
+import com.epam.library.books.functions.BookDTOToBookFunction;
+import com.epam.library.books.functions.BookToDTOFunction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +20,11 @@ public class BookRepository {
 
 
     Optional<BookDTO> findById(long id) {
-        return Optional.of(BookMapper.mapToDTO(bookDAOCreator.getReaderDAO().findById(id)));
+        return Optional.of(
+                new BookToDTOFunction()
+                        .apply(bookDAOCreator
+                                .getReaderDAO()
+                                .findById(id)));
     }
 
     Optional<BookDTO> create(BookDTO bookDTO) {
@@ -28,32 +34,56 @@ public class BookRepository {
                 .available(bookDTO.isAvailable())
                 .reader(bookDTO.getReader())
                 .build();
-        return Optional.of(BookMapper.mapToDTO(bookDAOCreator.getReaderDAO().create(book)));
+        return Optional
+                .of(new BookToDTOFunction()
+                        .apply(bookDAOCreator
+                                .getReaderDAO()
+                                .create(book)));
     }
 
     void deleteById(long id) {
-        bookDAOCreator.getReaderDAO().deleteById(id);
+        bookDAOCreator
+                .getReaderDAO()
+                .deleteById(id);
     }
 
 
     Optional<BookDTO> update(BookDTO bookDTO) {
-        return Optional.of(BookMapper.mapToDTO(bookDAOCreator.getReaderDAO().update(BookMapper.mapToBook(bookDTO))));
+        return Optional.of(new BookToDTOFunction()
+                .apply(bookDAOCreator.getReaderDAO()
+                        .update(new BookDTOToBookFunction().apply(bookDTO))));
     }
 
     List<Optional<BookDTO>> findBooksByTitle(String bookTitle) {
-        return bookDAOCreator.getReaderDAO().findByTitle(bookTitle).stream().map(BookMapper::mapToDTO).map(Optional::of).toList();
+        return bookDAOCreator
+                .getReaderDAO()
+                .findByTitle(bookTitle)
+                .stream()
+                .map(book -> new BookToDTOFunction().apply(book))
+                .map(Optional::of)
+                .toList();
     }
 
     List<Optional<BookDTO>> findBooksByDate(String startDate, String endDate) {
-        return bookDAOCreator.getReaderDAO().findByDate(startDate, endDate).stream().map(BookMapper::mapToDTO).map(Optional::of).toList();
+        return bookDAOCreator
+                .getReaderDAO()
+                .findByDate(startDate, endDate)
+                .stream()
+                .map(book -> new BookToDTOFunction().apply(book))
+                .map(Optional::of)
+                .toList();
     }
 
     void deleteByTitleAuthorAvailable(String title, String author, boolean available) {
-        bookDAOCreator.getReaderDAO().deleteByTitleAuthorAvailable(title, author, available);
+        bookDAOCreator
+                .getReaderDAO()
+                .deleteByTitleAuthorAvailable(title, author, available);
     }
 
     void deleteByTitle(String title) {
-        bookDAOCreator.getReaderDAO().deleteByTitle(title);
+        bookDAOCreator
+                .getReaderDAO()
+                .deleteByTitle(title);
     }
 
     void deleteAllBooks() {
@@ -61,18 +91,37 @@ public class BookRepository {
     }
 
     List<Optional<BookDTO>> findAll() {
-        return bookDAOCreator.getReaderDAO().findAll().stream().map(BookMapper::mapToDTO).map(Optional::of).toList();
+        return bookDAOCreator
+                .getReaderDAO()
+                .findAll()
+                .stream()
+                .map(book -> new BookToDTOFunction().apply(book))
+                .map(Optional::of)
+                .toList();
     }
 
     String getAuthorByTitle(String title) {
-        return bookDAOCreator.getReaderDAO().getAuthorsByTitle(title).get(0);
+        return bookDAOCreator
+                .getReaderDAO()
+                .getAuthorsByTitle(title)
+                .get(0);
     }
 
     List<Optional<BookDTO>> findBooksByTitleAndAuthor(String title, String author) {
-        return bookDAOCreator.getReaderDAO().findByTitleAndAuthor(title, author).stream().map(BookMapper::mapToDTO).map(Optional::of).toList();
+        return bookDAOCreator
+                .getReaderDAO()
+                .findByTitleAndAuthor(title, author)
+                .stream()
+                .map(book -> new BookToDTOFunction().apply(book))
+                .map(Optional::of)
+                .toList();
     }
 
     public Optional<BookDTO> makeBookAvailable(long bookId) {
-        return Optional.of(BookMapper.mapToDTO(bookDAOCreator.getReaderDAO().makeBookAvailable(bookId)));
+        return Optional
+                .of(new BookToDTOFunction()
+                        .apply(bookDAOCreator
+                                .getReaderDAO()
+                                .makeBookAvailable(bookId)));
     }
 }
