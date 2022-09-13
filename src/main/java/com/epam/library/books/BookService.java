@@ -36,11 +36,17 @@ public class BookService {
     }
 
     List<BookDTO> findByTitle(String title) {
-        return bookRepository.findBooksByTitle(title).stream().map(Optional::get).toList();
+        return bookRepository.findBooksByTitle(title)
+                .stream()
+                .map(Optional::get)
+                .toList();
     }
 
     List<BookDTO> findByDate(String startDate, String endDate) {
-        return bookRepository.findBooksByDate(startDate, endDate).stream().map(Optional::get).toList();
+        return bookRepository.findBooksByDate(startDate, endDate)
+                .stream()
+                .map(Optional::get)
+                .toList();
     }
 
     BookDTO save(BookDTO bookDTO) {
@@ -82,7 +88,11 @@ public class BookService {
 
 
     BookDTO giveBackBook(Reader reader, long bookId) {
-        if (reader.getBooks().stream().filter(book -> book.getId() == bookId).toList().isEmpty())
+        if (reader.getBooks()
+                .stream()
+                .filter(book -> book.getId() == bookId)
+                .toList()
+                .isEmpty())
             throw new BookNotBorrowedByGivenReaderException(bookId, reader.getId());
         BookDTO bookDTO = bookRepository.findById(bookId).get();
         bookDTO.setReader(new Reader());
@@ -104,7 +114,10 @@ public class BookService {
     }
 
     List<BookDTO> findAll() {
-        return bookRepository.findAll().stream().map(Optional::get).toList();
+        return bookRepository.findAll()
+                .stream()
+                .map(Optional::get)
+                .toList();
     }
 
     String getAuthorByTitle(String title) {
@@ -112,6 +125,10 @@ public class BookService {
     }
 
     List<BookDTO> findByTitleAndAuthor(String title, String author) {
-        return bookRepository.findBooksByTitleAndAuthor(title, author).stream().map(Optional::get).toList();
+        return bookRepository
+                .findBooksByTitleAndAuthor(title, author)
+                .stream()
+                .map(Optional::get)
+                .toList();
     }
 }
