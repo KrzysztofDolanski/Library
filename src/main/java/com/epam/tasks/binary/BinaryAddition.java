@@ -7,3 +7,4 @@ public class BinaryAddition {
         return Integer.toBinaryString(result);
     }
 }
+
