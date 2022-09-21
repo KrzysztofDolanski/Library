@@ -1,9 +1,9 @@
-package com.epam.library.books.delivery.addresses;
+package com.epam.library.delivery.addresses;
 
 import java.util.List;
 import java.util.Map;
 
-public enum Gdansk {
+public enum Gdansk implements City{
 
 
     WIECKOWSKIEGO(
@@ -22,5 +22,10 @@ public enum Gdansk {
 
     Gdansk(Map<Integer, List<Integer>> numbersFlats) {
         this.numbersFlats = numbersFlats;
+    }
+
+    @Override
+    public Map<Integer, List<Integer>> getNumbersFlats() {
+        return this.numbersFlats;
     }
 }

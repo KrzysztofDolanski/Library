@@ -1,9 +1,9 @@
-package com.epam.library.books.delivery.addresses;
+package com.epam.library.delivery.addresses;
 
 import java.util.List;
 import java.util.Map;
 
-public enum Sopot {
+public enum Sopot implements City{
 
     ZWYCIESTWA(Map.ofEntries(
             Map.entry(1, List.of(1, 2, 3, 4, 5, 6, 8)),
@@ -23,4 +23,8 @@ public enum Sopot {
         this.numbersFats = numbersFats;
     }
 
+    @Override
+    public Map<Integer, List<Integer>> getNumbersFlats() {
+        return this.numbersFats;
+    }
 }

@@ -1,5 +1,6 @@
 package com.epam.library.books;
 
+import com.epam.library.delivery.post.DeliverByPostService;
 import com.epam.library.readers.Reader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,9 +11,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.net.URI;
 import java.util.List;
 
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
+import static org.springframework.http.HttpHeaders.*;
 
 @RestController
 @RequestMapping("/books")
@@ -23,11 +25,14 @@ public class BookController {
     private final BookCookie bookCookie;
     private final BookCacheImpl bookCache;
 
+    private final DeliverByPostService delivery;
+
     @Autowired
-    public BookController(BookService bookService, BookCookie bookCookie, BookCacheImpl bookCache) {
+    public BookController(BookService bookService, BookCookie bookCookie, BookCacheImpl bookCache, DeliverByPostService delivery) {
         this.bookService = bookService;
         this.bookCookie = bookCookie;
         this.bookCache = bookCache;
+        this.delivery = delivery;
     }
 
     @GetMapping(value = "", params = "bookId", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -85,14 +90,14 @@ public class BookController {
                     .header(SET_COOKIE, bookCookie.responseCookie.toString())
                     .build();
         }
-       return ResponseEntity
+        return ResponseEntity
                 .status(HttpStatus.OK)
                 .header(SET_COOKIE, bookCookie.responseCookie.toString())
                 .body(all);
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ModelAndView showAllBooks(Model model){
+    public ModelAndView showAllBooks(Model model) {
         ResponseEntity<List<BookDTO>> allBooks = findAllBooks();
         ModelAndView mav = new ModelAndView("allBooks");
         mav.addObject("books", allBooks.getBody());
@@ -156,16 +161,19 @@ public class BookController {
                     .status(HttpStatus.NOT_IMPLEMENTED)
                     .header(SET_COOKIE, bookCookie.responseCookie.toString())
                     .build();
-        }        return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.MOVED_PERMANENTLY)
                 .header(SET_COOKIE, bookCookie.responseCookie.toString())
+                .header(LOCATION,  "/deliver")
                 .body(book);
     }
 
 
     @PutMapping(value = "", params = {"bookId"})
     public ResponseEntity<BookDTO> giveBackBook(@RequestBody Reader reader,
-                                              @RequestParam("bookId") long bookId) {
+                                                @RequestParam("bookId") long bookId) {
         BookDTO book = bookService.giveBackBook(reader, bookId);
         if (book == null) {
             return ResponseEntity
@@ -178,4 +186,5 @@ public class BookController {
                 .header(SET_COOKIE, bookCookie.responseCookie.toString())
                 .body(book);
     }
+
 }

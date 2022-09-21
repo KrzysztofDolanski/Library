@@ -4,7 +4,6 @@ import java.util.*;
 
 public class ArrDiff {
 
-
     public int[] arrayDiff(int[] a, int[] b) {
 
         List<Integer> listA = new LinkedList<>(Arrays.stream(a).boxed().toList());
@@ -13,8 +12,9 @@ public class ArrDiff {
             listA.removeAll(List.of(integer));
         }
 
-        return listA.stream().mapToInt(x->x).toArray();
+        return listA.stream().mapToInt(x -> x).toArray();
 
     }
+
 
 }

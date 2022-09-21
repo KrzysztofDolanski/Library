@@ -1,4 +1,4 @@
-package com.epam.library.books.delivery.addresses;
+package com.epam.library.delivery.addresses;
 
 import java.util.Set;
 
@@ -7,9 +7,9 @@ public enum AddressesAllowed {
     GDANSK(Set.of(Gdansk.values())),
     SOPOT(Set.of(Sopot.values()));
 
-    Set<Enum<?>> streets;
+    public Set<City> streets;
 
-    AddressesAllowed(Set<Enum<?>> streets) {
+    AddressesAllowed(Set<City> streets) {
         this.streets = streets;
     }
 }
