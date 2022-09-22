@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Deliver</title>
+</head>
+
+<body th:fragment="deliverpost">
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1> Type delivery address </h1>
+        </div>
+    </div>
+
+    <form class="btn btn-info" action="#" th:action="@{/deliverystatus}" method="get" modelAttribute="deliverypost" th:object="${deliverystatus}">
+        <label>
+            <input id="city" placeholder="city" type="text" th:name="city"/>
+            <input id="streetName" placeholder="street name" type="text" th:name="streetName"/>
+            <input id="homeNumber" placeholder="home number" type="number" th:name="homeNumber"/>
+        </label>
+        <input type="submit">
+    </form>
+
+</div>
+
+
+</body>
+</html>

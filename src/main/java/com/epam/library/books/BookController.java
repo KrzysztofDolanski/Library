@@ -1,20 +1,18 @@
 package com.epam.library.books;
 
-import com.epam.library.delivery.post.DeliverByPostService;
 import com.epam.library.readers.Reader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.net.URI;
 import java.util.List;
 
-import static org.springframework.http.HttpHeaders.*;
+import static org.springframework.http.HttpHeaders.LOCATION;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @RestController
 @RequestMapping("/books")
@@ -25,14 +23,11 @@ public class BookController {
     private final BookCookie bookCookie;
     private final BookCacheImpl bookCache;
 
-    private final DeliverByPostService delivery;
-
     @Autowired
-    public BookController(BookService bookService, BookCookie bookCookie, BookCacheImpl bookCache, DeliverByPostService delivery) {
+    public BookController(BookService bookService, BookCookie bookCookie, BookCacheImpl bookCache) {
         this.bookService = bookService;
         this.bookCookie = bookCookie;
         this.bookCache = bookCache;
-        this.delivery = delivery;
     }
 
     @GetMapping(value = "", params = "bookId", produces = MediaType.APPLICATION_JSON_VALUE)

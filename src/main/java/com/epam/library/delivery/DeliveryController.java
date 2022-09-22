@@ -22,8 +22,8 @@ public class DeliveryController {
     @PostMapping("/delivery")
     public String deliverySelector(@RequestParam("delivery") String delivery){
         return switch (delivery) {
-            case "post" -> "deliverpost";
-            case "email" -> "email";
+            case "post" -> "deliveryPost";
+            case "email" -> "deliveryEmail";
             case "personal" -> "personal";
             default -> "index";
         };

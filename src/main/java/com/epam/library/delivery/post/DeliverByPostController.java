@@ -23,14 +23,14 @@ public class DeliverByPostController {
 
     @GetMapping(value = "/deliverpost")
     public String getDeliver() {
-        return "deliverpost";
+        return "deliveryPost";
     }
 
     /**
      * This method is to check availability of typed postal address.
      *
      * @param deliverByPost Object with address values.
-     * @return {@link templates/deliverpost.html}
+     * @return {@link templates/deliveryPost.html}
      */
     @RequestMapping(value = "/deliverpost", method = RequestMethod.POST)
     public ModelAndView deliver(@ModelAttribute @Validated DeliverByPost deliverByPost) {

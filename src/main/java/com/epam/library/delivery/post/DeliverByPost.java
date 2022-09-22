@@ -3,11 +3,14 @@ package com.epam.library.delivery.post;
 import com.epam.library.delivery.Address;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class DeliverByPost extends Address {
+class DeliverByPost extends Address {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     String city;
     String street_name;
@@ -25,10 +28,6 @@ public class DeliverByPost extends Address {
     }
 
     public DeliverByPost() {
-    }
-
-    public String getAbsoluteAddress() {
-        return absolute_address = this.city + " " + this.street_name + " " + this.home_number + " " + this.flat_number;
     }
 
 
@@ -84,7 +83,7 @@ public class DeliverByPost extends Address {
         return absolute_address;
     }
 
-    public void setAbsolute_address(String absolute_address) {
-        this.absolute_address = absolute_address;
+    public void setAbsolute_address() {
+        this.absolute_address = this.city + " " + this.street_name + " " + this.home_number + " " + this.flat_number;
     }
 }

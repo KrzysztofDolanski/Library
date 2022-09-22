@@ -8,9 +8,9 @@ import java.util.Arrays;
 
 
 @Service
-public class DeliverByPostService implements Delivery {
+class DeliverByPostService implements Delivery {
 
-    public boolean addressAccessibility(String city, String streetName, Integer homeNumber, Integer flatNumber) {
+    boolean addressAccessibility(String city, String streetName, Integer homeNumber, Integer flatNumber) {
         return Arrays
                 .stream(AddressesAllowed.values())
                 .filter(c -> c.name().equalsIgnoreCase(city))

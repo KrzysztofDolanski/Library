@@ -18,11 +18,9 @@
         </div>
     </div>
 
-    <form class="btn btn-info" action="#" th:action="@{/deliverystatus}" method="get" modelAttribute="deliverypost" th:object="${deliverystatus}">
+    <form class="btn btn-info" action="#" th:action="@{/deliverystatus}" method="get" modelAttribute="deliveryEmail" th:object="${deliverystatus}">
         <label>
-            <input id="city" placeholder="name" type="text" th:name="city"/>
-            <input id="streetName" placeholder="streetName" type="text" th:name="streetName"/>
-            <input id="homeNumber" placeholder="homeNumber" type="number" th:name="homeNumber"/>
+            <input id="email" placeholder="email" type="email" th:name="email"/>
         </label>
         <input type="submit">
     </form>
