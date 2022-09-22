@@ -157,15 +157,11 @@ public class BookController {
     public ResponseEntity<BookDTO> borrowBook(@RequestParam("title") String title,
                                               @RequestParam("readerId") Long readerId,
                                               @RequestParam("readerName") String readerName,
-                                              @RequestParam("readerSurname") String readerSurname,
-                                              Model model) {
+                                              @RequestParam("readerSurname") String readerSurname) {
         Reader reader = new Reader();
         reader.setId(readerId);
         reader.setName(readerName);
         reader.setSurname(readerSurname);
-
-//        model.addAttribute("reader", reader);
-//        model.addAttribute("title", title);
 
         BookDTO book = bookService.borrow(reader, title);
         if (book == null) {

@@ -7,7 +7,6 @@ import javax.persistence.Id;
 
 @Entity
 public class DeliverByPost extends Address {
-
     @Id
     Long id;
     String city;

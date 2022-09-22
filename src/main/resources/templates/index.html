@@ -26,6 +26,7 @@
 </form>
 <div>
 <form class="btn btn-info" action="#" th:action="@{/readers}" method="post" modelAttribute="reader" th:object="${reader}">
+    <h2>Save new reader</h2>
     <label>
         <input id="name" placeholder="name" type="text" th:name="name"/>
         <input id="surname" placeholder="surname" type="text" th:name="surname"/>
@@ -36,14 +37,14 @@
 </div>
 
 <!--borrow book-->
-
 <div>
     <h1>BORROW BOOK</h1>
-    <h2>Type Reader</h2>
     <form class="btn btn-info" action="#" th:action="@{/books}" method="post">
+    <h2>Type title of the book</h2>
         <label th:field="title">
             <input id="title" placeholder="title" type="text" th:name="title"/>
         </label>
+     <h2>Type reader/borrower identification</h2>
         <label>
             <input id="readerId" placeholder="id" type="number" th:name="readerId"/>
             <input id="readerName" placeholder="name" type="text" th:name="readerName"/>
