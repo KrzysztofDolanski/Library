@@ -2,7 +2,7 @@ package com.epam.library.delivery;
 
 public interface Delivery {
 
-    boolean payment(Integer payment);
+    boolean deliveryProcedure(String data);
     void collectDeliverDetails();
 
 }

@@ -25,7 +25,7 @@
     </label>
 </form>
 <div>
-<form class="btn btn-info" action="#" th:action="@{/readers}" method="post" modelAttribute="reader" th:object="${readerd}">
+<form class="btn btn-info" action="#" th:action="@{/readers}" method="post" modelAttribute="reader" th:object="${reader}">
     <label>
         <input id="name" placeholder="name" type="text" th:name="name"/>
         <input id="surname" placeholder="surname" type="text" th:name="surname"/>
@@ -35,7 +35,24 @@
 </form>
 </div>
 
+<!--borrow book-->
 
+<div>
+    <h1>BORROW BOOK</h1>
+    <h2>Type Reader</h2>
+    <form class="btn btn-info" action="#" th:action="@{/books}" method="post">
+        <label th:field="title">
+            <input id="title" placeholder="title" type="text" th:name="title"/>
+        </label>
+        <label>
+            <input id="readerId" placeholder="id" type="number" th:name="readerId"/>
+            <input id="readerName" placeholder="name" type="text" th:name="readerName"/>
+            <input id="readerSurname" placeholder="surname" type="text"  th:name="readerSurname"/>
+        </label>
+        <input type="submit">
+    </form>
+</div>
+<!---->
 
 </body>
 </html>

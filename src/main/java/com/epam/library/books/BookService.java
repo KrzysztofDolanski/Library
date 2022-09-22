@@ -57,16 +57,17 @@ public class BookService {
         bookRepository.deleteById(bookId);
     }
 
-    BookDTO borrow(Long readerId, String readerName, String readerSurname, String bookTitle) {
+    BookDTO borrow(Reader reader, String bookTitle) {
         Reader borrower = null;
         BookDTO bookDTO = null;
-        if (readerId != null) {
-            borrower = readerService.findById(readerId).orElseThrow(ReaderNotFoundException::new);
+        if (reader.getId() != null) {
+            borrower = readerService.findById(reader.getId()).orElseThrow(ReaderNotFoundException::new);
         } else {
             System.err.println("You must provide id.");
         }
         if (borrower != null) {
-            if (borrower.getName().equals(readerName) && borrower.getSurname().equals(readerSurname)) {
+            if (borrower.getName().toLowerCase().contains(reader.getName().toLowerCase())
+                    && borrower.getSurname().toLowerCase().contains(reader.getSurname().toLowerCase())) {
                 bookDTO = bookRepository.findBooksByTitle(bookTitle)
                         .stream()
                         .map(Optional::get)

@@ -32,7 +32,9 @@ public class ReaderController {
         this.readerDeleteCookie = readerDeleteCookie;
     }
 
-    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, "application/x-www-form-urlencoded"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, "application/x-www-form-urlencoded"},
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reader> create(@ModelAttribute @Validated Reader reader, Model model) {
         Reader createdReader = new Reader();
         String cookie = "";

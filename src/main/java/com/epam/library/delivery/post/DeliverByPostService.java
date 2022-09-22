@@ -10,11 +10,6 @@ import java.util.Arrays;
 @Service
 public class DeliverByPostService implements Delivery {
 
-    String city;
-    String streetName;
-    Integer homeNumber;
-    Integer flatNumber;
-
     public boolean addressAccessibility(String city, String streetName, Integer homeNumber, Integer flatNumber) {
         return Arrays
                 .stream(AddressesAllowed.values())
@@ -32,7 +27,7 @@ public class DeliverByPostService implements Delivery {
     }
 
     @Override
-    public boolean payment(Integer payment) {
+    public boolean deliveryProcedure(String data) {
 
         return false;
     }

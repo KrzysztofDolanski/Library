@@ -97,7 +97,7 @@ public class BookController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ModelAndView showAllBooks(Model model) {
+    public ModelAndView showAllBooks() {
         ResponseEntity<List<BookDTO>> allBooks = findAllBooks();
         ModelAndView mav = new ModelAndView("allBooks");
         mav.addObject("books", allBooks.getBody());
@@ -150,23 +150,34 @@ public class BookController {
                 .build();
     }
 
-    @PutMapping(value = "", params = {"readerId", "readerName", "readerSurname", "title"})
-    public ResponseEntity<BookDTO> borrowBook(@RequestParam("readerId") long readerId,
+    @PostMapping(value = "",
+            params = {"title", "readerId", "readerName", "readerSurname"},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, "application/x-www-form-urlencoded"},
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookDTO> borrowBook(@RequestParam("title") String title,
+                                              @RequestParam("readerId") Long readerId,
                                               @RequestParam("readerName") String readerName,
                                               @RequestParam("readerSurname") String readerSurname,
-                                              @RequestParam("title") String title) {
-        BookDTO book = bookService.borrow(readerId, readerName, readerSurname, title);
+                                              Model model) {
+        Reader reader = new Reader();
+        reader.setId(readerId);
+        reader.setName(readerName);
+        reader.setSurname(readerSurname);
+
+//        model.addAttribute("reader", reader);
+//        model.addAttribute("title", title);
+
+        BookDTO book = bookService.borrow(reader, title);
         if (book == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_IMPLEMENTED)
                     .header(SET_COOKIE, bookCookie.responseCookie.toString())
                     .build();
         }
-
         return ResponseEntity
                 .status(HttpStatus.MOVED_PERMANENTLY)
                 .header(SET_COOKIE, bookCookie.responseCookie.toString())
-                .header(LOCATION,  "/deliver")
+                .header(LOCATION, "/delivery")
                 .body(book);
     }
 

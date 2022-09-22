@@ -10,15 +10,15 @@
     <title>Deliver</title>
 </head>
 
-<body th:fragment="deliver">
+<body th:fragment="deliverpost">
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1> Pick delivery option</h1>
+            <h1> Type delivery address </h1>
         </div>
     </div>
 
-    <form class="btn btn-info" action="#" th:action="@{/deliverystatus}" method="get" modelAttribute="delivery" th:object="${deliverystatus}">
+    <form class="btn btn-info" action="#" th:action="@{/deliverystatus}" method="get" modelAttribute="deliverypost" th:object="${deliverystatus}">
         <label>
             <input id="city" placeholder="name" type="text" th:name="city"/>
             <input id="streetName" placeholder="streetName" type="text" th:name="streetName"/>
@@ -27,12 +27,6 @@
         <input type="submit">
     </form>
 
-</div>
-
-
-
-<div class="col-md-6">
-    <a class="btn btn-success" th:method="get" href="#" th:href="@{/deliver}"> Delivery </a>
 </div>
 
 
