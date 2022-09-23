@@ -1,11 +1,6 @@
 package com.epam.page;
 
 
-import groovyjarjarantlr4.runtime.misc.Stats;
-
-import java.util.HashSet;
-import java.util.Set;
-
 public class Statistician {
 //
 //    private final Set<Page> evaluatedPages;

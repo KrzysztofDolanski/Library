@@ -2,6 +2,7 @@ package com.epam.library.books;
 
 import com.epam.library.readers.Reader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +22,18 @@ public class BookController {
 
     private final BookService bookService;
     private final BookCookie bookCookie;
-    private final BookCacheImpl bookCache;
 
     @Autowired
-    public BookController(BookService bookService, BookCookie bookCookie, BookCacheImpl bookCache) {
+    public BookController(BookService bookService, BookCookie bookCookie) {
         this.bookService = bookService;
         this.bookCookie = bookCookie;
-        this.bookCache = bookCache;
     }
+
 
     @GetMapping(value = "", params = "bookId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookDTO> findById(@RequestParam("bookId") Long bookId) {
-        BookDTO byId = bookCache.load(bookId);
+
+        BookDTO byId = bookService.findById(bookId);
         if (byId.getId() == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -144,6 +145,7 @@ public class BookController {
                 .header(SET_COOKIE, bookCookie.responseCookie.toString())
                 .build();
     }
+
 
     @PostMapping(value = "",
             params = {"title", "readerId", "readerName", "readerSurname"},

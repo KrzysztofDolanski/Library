@@ -3,7 +3,6 @@ package com.epam.library.readers;
 import com.epam.library.database.DatabaseConnectionManager;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;

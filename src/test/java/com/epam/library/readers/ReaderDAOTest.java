@@ -1,20 +1,6 @@
 package com.epam.library.readers;
 
-import com.epam.library.books.BookRepository;
-import com.epam.library.books.BookService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ReaderDAOTest {

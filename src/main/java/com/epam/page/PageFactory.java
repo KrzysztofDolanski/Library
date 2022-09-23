@@ -1,9 +1,5 @@
 package com.epam.page;
 
-import java.net.URI;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import javax.swing.text.AttributeSet;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML.Attribute;

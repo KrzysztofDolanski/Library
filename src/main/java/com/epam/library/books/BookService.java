@@ -4,9 +4,11 @@ import com.epam.library.books.exceptions.BookNotBorrowedByGivenReaderException;
 import com.epam.library.books.exceptions.BookNotFoundException;
 import com.epam.library.books.exceptions.SaveBookException;
 import com.epam.library.readers.Reader;
-import com.epam.library.readers.exceptions.ReaderNotFoundException;
 import com.epam.library.readers.ReaderService;
+import com.epam.library.readers.exceptions.ReaderNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +27,8 @@ public class BookService {
         this.readerService = readerService;
     }
 
-    BookDTO findById(Long bookId) {
+    @Cacheable(cacheNames = "booksById")
+    public BookDTO findById(Long bookId) {
         BookDTO bookDTO = null;
         try {
             bookDTO = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
@@ -35,14 +38,16 @@ public class BookService {
         return bookDTO;
     }
 
-    List<BookDTO> findByTitle(String title) {
+    @Cacheable(cacheNames = "booksTitle")
+    public List<BookDTO> findByTitle(String title) {
         return bookRepository.findBooksByTitle(title)
                 .stream()
                 .map(Optional::get)
                 .toList();
     }
 
-    List<BookDTO> findByDate(String startDate, String endDate) {
+    @Cacheable(cacheNames = "booksDate")
+    public List<BookDTO> findByDate(String startDate, String endDate) {
         return bookRepository.findBooksByDate(startDate, endDate)
                 .stream()
                 .map(Optional::get)
@@ -114,7 +119,8 @@ public class BookService {
         bookRepository.deleteAllBooks();
     }
 
-    List<BookDTO> findAll() {
+    @Cacheable(cacheNames = "allBooks")
+    public List<BookDTO> findAll() {
         return bookRepository.findAll()
                 .stream()
                 .map(Optional::get)
@@ -125,7 +131,8 @@ public class BookService {
         return bookRepository.getAuthorByTitle(title);
     }
 
-    List<BookDTO> findByTitleAndAuthor(String title, String author) {
+    @Cacheable(cacheNames = "booksByTitleAndAuthor")
+    public List<BookDTO> findByTitleAndAuthor(String title, String author) {
         return bookRepository
                 .findBooksByTitleAndAuthor(title, author)
                 .stream()
